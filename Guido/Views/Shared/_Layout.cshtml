@@ -44,9 +44,9 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
-    <script>
+    <script>        
         $('.tree-toggle').click(function () {
-            $(this).parent().children('ul.tree').toggle(200);
+            $(this).parent().children('ul.tree').slideToggle(200);
         });
     </script>
     <style css>
