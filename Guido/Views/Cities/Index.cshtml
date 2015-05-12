@@ -11,12 +11,13 @@
     <select class="form-control" id="sel1">
         <option>------Odaberite grad-------</option>
 
-        @foreach (var item in Model) {
-              
-        <option>@Html.DisplayFor(modelItem => item.cityName)</option>
- 
+        @foreach (var item in Model)
+        {
+
+            <option>@Html.DisplayFor(modelItem => item.cityName)</option>
+
         }
-</select>
+    </select>
 </div>
 
 <p>

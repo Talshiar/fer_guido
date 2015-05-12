@@ -44,7 +44,7 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
-    <script>        
+    <script>
         $('.tree-toggle').click(function () {
             $(this).parent().children('ul.tree').slideToggle(200);
         });
@@ -54,6 +54,7 @@
         .nav label {
             color: darkolivegreen;
         }
+
         .tree > li > a {
             color: darkseagreen;
         }
