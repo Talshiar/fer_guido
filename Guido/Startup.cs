@@ -8,7 +8,7 @@ namespace Guido
     {
         public void Configuration(IAppBuilder app)
         {
-            ConfigureAuth(app);//hraste whyyy
+            ConfigureAuth(app);
         }
     }
 }
