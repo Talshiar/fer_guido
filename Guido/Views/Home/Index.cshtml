@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<Baza.City>
+
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -11,10 +13,14 @@
         <div class="form-group">
             <label for="sel1">Izaberi grad:</label>
             <select class="form-control" id="sel1">
+                <option>------Odaberite grad-------</option>
 
+                @foreach (var item in Model)
+                {
 
-                <option>moj grad</option>
+                    <option>@Html.DisplayFor(modelItem => item.cityName)</option>
 
+                }
             </select>
         </div>
     </div>
@@ -97,6 +103,12 @@
         Level 3: .col-xs-8 .col-sm-6
     </div>
 </div>
+
+<div class="row">
+    <div class="col-sm-9">
+        <h1>Onaj uberkul gumb GO!</h1>
+        </div>
+    </div>
 
 
 
