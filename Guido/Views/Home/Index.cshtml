@@ -1,10 +1,114 @@
-﻿@{
+﻿@model IEnumerable<Baza.City>
+
+@{
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+
+
+
+<div class="row">
+    <div class="col-sm-9">
+
+        <div class="form-group">
+            <label for="sel1">Izaberi grad:</label>
+            <select class="form-control" id="sel1">
+                <option>------Odaberite grad-------</option>
+
+                @foreach (var item in Model)
+                {
+
+                    <option>@Html.DisplayFor(modelItem => item.cityName)</option>
+
+                }
+            </select>
+        </div>
+    </div>
 </div>
+<div class="container">
+    <div class="col-xs-8 col-sm-6 col-md-2">
+        <div class="well well-sm">
+
+            <div>
+                <ul class="nav">
+                    <li>
+                        <label label-default="" class="tree-toggle nav-header">Postojeće rute</label>
+                        <ul class="nav tree">
+                            <li>
+
+                                <a href="#">Ruta 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Ruta 2</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <label label-default="" class="tree-toggle nav-header">Znamenitosti</label>
+                        <ul class="nav tree">
+                            <li>
+                                <label label-default="" class="tree-toggle nav-header">Povijesne</label>
+                                <ul class="nav tree">
+                                    <li>
+                                        <a href="#">Kula Lotršćak</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Svenova jaja</a>
+                                    </li>
+                                </ul>
+                            <li>
+                                <label label-default="" class="tree-toggle nav-header">Moderne</label>
+                                <ul class="nav tree">
+                                    <li>
+                                        <a href="#">MSU</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Bandićeve fontane</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+        <style type="text/css">
+            #map-canvas {
+                height: 500px;
+            }
+        </style>
+
+        <script type="text/javascript"
+                src="http://www.google.com/jsapi?autoload={'modules':[{name:'maps',version:3,other_params:''}]}"></script>
+        <script type="text/javascript">
+            function init() {
+                var mapDiv = document.getElementById('map-canvas');
+                var map = new google.maps.Map(mapDiv, {
+                    center: new google.maps.LatLng(45.81666666666667, 15.983333333333333),
+                    zoom: 13,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                });
+            }
+
+            google.maps.event.addDomListener(window, 'load', init);
+
+        </script>
+        <div id="map-canvas"></div>
+    </div>
+    <div class="col-xs-8 col-sm-6 col-md-2">
+        Level 3: .col-xs-8 .col-sm-6
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-9">
+        <h1>Onaj uberkul gumb GO!</h1>
+    </div>
+</div>
+
+
 
