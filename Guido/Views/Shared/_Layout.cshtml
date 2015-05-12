@@ -8,7 +8,7 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
-   
+
 </head>
 
 <body>
@@ -44,5 +44,30 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script>
+        $('.tree-toggle').click(function () {
+            $(this).parent().children('ul.tree').toggle(200);
+        });
+    </script>
+    <style css>
+        /* 1st level */
+        .nav label {
+            color: darkolivegreen;
+        }
+        .tree > li > a {
+            color: darkseagreen;
+        }
+        /* 2nd level */
+        .tree > li > label {
+            padding: 10px 15px;
+        }
+
+        /* 3rd level */
+        .tree > li > ul > li > a {
+            color: lawngreen;
+            font-size: 10pt;
+            margin-left: 20px;
+        }
+    </style>
 </body>
 </html>
