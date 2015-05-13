@@ -11,6 +11,7 @@ namespace Baza
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     
     public partial class State
     {
@@ -20,6 +21,8 @@ namespace Baza
         }
     
         public int ID { get; set; }
+
+        [Display(Name = "Država")]
         public string stateName { get; set; }
     
         public virtual ICollection<City> City { get; set; }
