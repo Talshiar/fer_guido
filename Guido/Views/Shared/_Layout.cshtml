@@ -14,7 +14,6 @@
 </head>
 
 <body>
-
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -42,13 +41,29 @@
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
     </div>
+    <
 
-    <script src="Scripts/googlemap.js" type="text/javascript"></script>
+    <script src="Scripts/GoogleMaps.js" type="text/javascript"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCp3aNN7IXH_AmU59UH2g1s5QC4N2e7r6o&sensor=true"></script>
+   <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        
+        <style type="text/css">
+            #festival-map {
+                height: 500px;
+            }
+            </style>
 
-    <script>
-        $('.tree-toggle').click(function () {
-            $(this).parent().children('ul.tree').slideToggle(200);
-        });
+
+    <!--<script src="Scripts/GoogleMaps.js" type="text/javascript"></script>-->
+    <!--Main chunk of javascript that creates and controls the map.-->
+
+        <script>
+            $('.tree-toggle').click(function () {
+                $(this).parent().children('ul.tree').slideToggle(200);
+            });
+            $(function () {
+                $('.tree-toggle').parent().children('ul.tree').slideToggle(200);
+            })
     </script>
     <style css>
         /* 1st level */
