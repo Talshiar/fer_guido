@@ -7,7 +7,9 @@
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
 
 </head>
 
@@ -41,9 +43,8 @@
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    <script src="Scripts/googlemap.js" type="text/javascript"></script>
+
     <script>
         $('.tree-toggle').click(function () {
             $(this).parent().children('ul.tree').slideToggle(200);

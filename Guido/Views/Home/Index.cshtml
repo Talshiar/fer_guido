@@ -36,10 +36,10 @@
                         <ul class="nav tree">
                             <li>
 
-                                <a href="#">Ruta 1</a>
+                                <a class="js-route" data-route="1" href="#">Ruta 1</a>
                             </li>
                             <li>
-                                <a href="#">Ruta 2</a>
+                                <a class="js-route" data-route="2" href="#">Ruta 2</a>
                             </li>
                         </ul>
                     </li>
@@ -84,6 +84,8 @@
 
         <!--Connect to the google maps api using your api key-->
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCp3aNN7IXH_AmU59UH2g1s5QC4N2e7r6o&sensor=true"></script>
+
+        <!--<script src="Scripts/GoogleMaps.js" type="text/javascript"></script>-->
 
         <!--Main chunk of javascript that creates and controls the map.-->
         <script type="text/javascript">
@@ -152,6 +154,34 @@
 
 
             }
+            $(function () {
+                var markers = [
+                        ['Trg bana Josipa Jelačića', 45.813203, 15.977287],
+                        ['Hrvatsko Narodno Kazalište', 45.809397, 15.970039],
+                        ['Zoološki vrt Zagreb', 45.821884, 16.019451],
+                        ['SIDRO', 45.785354, 15.953975],
+                        ['FER', 45.800788, 15.971327],
+                        ['Arkade Hermanna Bollea', 45.835602, 15.983987]
+                ];
+                $('.js-route').on('click', function () {
+                    //hvala gabi pederčinjo, tu satvljaš event za mape route 1
+                    var $this = $(this);
+                    console.log($this.data('js-route'));
+                    if ($this.data('js-route') === '1') {
+                        var markerPositionGlastonbury = new google.maps.LatLng(45.800788, 15.971327);
+
+
+                        //Creating the Glastonbury map marker.
+                        markerGlastonbury = new google.maps.Marker({
+                            //uses the position set above.
+                            position: markerPositionGlastonbury,
+                            //adds the marker to the map.
+                            map: festivalMap,
+                            title: 'FER',
+                        });
+                    }
+                });
+            });
 
         </script>
         <!--Create the div to hold the map.-->
@@ -167,6 +197,9 @@
         <button type="button" class="btn btn-primary btn-lg btn-block">GO!</button>
         </div>
 </div>
+
+
+
 
 
 
