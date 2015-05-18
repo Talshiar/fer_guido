@@ -1,0 +1,148 @@
+﻿@model IEnumerable<Baza.RoutePoint>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Napravi svoju rutu</h2>
+<div>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+    <style type="text/css">
+        #map-canvas {
+            height: 500px;
+        }
+
+        #panel {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            margin-left: -180px;
+            z-index: 5;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #999;
+        }
+    </style>
+
+    <!--Connect to the google maps api using your api key-->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCp3aNN7IXH_AmU59UH2g1s5QC4N2e7r6o&sensor=true"></script>
+
+    <script type="text/javascript">
+        var map;
+        var markers = [];
+        var geocoder;
+
+        function initialize() {
+            geocoder = new google.maps.Geocoder();
+            var mapCenter = new google.maps.LatLng(45.813209, 15.977283);
+            var mapOptions = {
+                zoom: 13,
+                center: mapCenter,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+            var marker = new google.maps.Marker({
+                position: map.getCenter(),
+                map: map,
+                title: 'Click to zoom'
+            });
+
+            google.maps.event.addListener(map, 'click', function () {
+                map.setZoom(17);
+                map.setCenter(marker.getPosition());
+            });
+
+
+            // Sets the map on all markers in the array.
+            function setAllMap(map) {
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setMap(map);
+                }
+            }
+        }
+
+        function codeAddress() {
+            var address = document.getElementById('address').value;
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    map.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location
+                    });
+                }
+                else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                    wait = true;
+                    setTimeout("wait = true", 2000);
+                    //alert("OQL: " + status);
+                }
+                else {
+                    alert('Neuspješno! ' + status);
+                }
+            });
+        }
+
+        // Add a marker to the map and push to the array.
+        function addMarker() {
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map
+            });
+            markers.push(marker);
+        }
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+
+    <div id="panel">
+        <input id="address" type="textbox" placeholder="Upišite željeni grad">
+        <input type="button" value="Geocode" onclick="codeAddress()">
+    </div>
+    <div id="map-canvas"></div>
+</div>
+
+
+
+
+<p>
+
+    @Html.ActionLink("Dodaj novu rutu2","Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PositionInRoute)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Place.dscrb)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Route.typOfRoute)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.PositionInRoute)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Place.dscrb)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Route.typOfRoute)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.IdRoutePoint }) |
+            @Html.ActionLink("Details", "Details", new { id=item.IdRoutePoint }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.IdRoutePoint })
+        </td>
+    </tr>
+}
+
+</table>
