@@ -4,30 +4,33 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Popis mjesta:</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Dodaj novo mjesto", "Create")
+</p>
+<p>
+    @Html.ActionLink("Pogledaj vrste mjesta", "Index", "TypeOfPlaces")
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.longitude)
+            Slika:
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.latitude)
+            Naziv mjesta:
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.typeOfPlace)
+            Tip mjesta:
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.dscrb)
+            Adresa
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.picture)
+            Grad:
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.City.cityName)
+            Mogućnosti:
         </th>
         <th></th>
     </tr>
@@ -35,27 +38,24 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.longitude)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.latitude)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.typeOfPlace)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.dscrb)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.picture)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TypeOfPlace1.NameTypeOfPlace)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.adress)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.City.cityName)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+            @Html.ActionLink("Uredi", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Detalji", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Izbriši", "Delete", new { id=item.ID })
         </td>
     </tr>
 }

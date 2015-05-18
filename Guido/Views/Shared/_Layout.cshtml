@@ -28,6 +28,7 @@
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Početna", "Index", "Home")</li>
                     <li>@Html.ActionLink("Popis gradova", "Index", "Cities")</li>
+                    <li>@Html.ActionLink("Popis mjesta", "Index", "Places")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
@@ -38,7 +39,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Sintaksni Dijabetičari</p>
         </footer>
     </div>
     <
