@@ -274,19 +274,16 @@
     <Content Include="Views\Places\Details.cshtml" />
     <Content Include="Views\Places\Edit.cshtml" />
     <Content Include="Views\Places\Index.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\MakeRoute\Create.cshtml" />
     <Content Include="Views\MakeRoute\Delete.cshtml" />
     <Content Include="Views\MakeRoute\Details.cshtml" />
     <Content Include="Views\MakeRoute\Edit.cshtml" />
     <Content Include="Views\MakeRoute\Index.cshtml" />
-=======
     <Content Include="Views\RoutePoints\Create.cshtml" />
     <Content Include="Views\RoutePoints\Delete.cshtml" />
     <Content Include="Views\RoutePoints\Details.cshtml" />
     <Content Include="Views\RoutePoints\Edit.cshtml" />
     <Content Include="Views\RoutePoints\Index.cshtml" />
->>>>>>> 1611a9be08ac578b1009741ee396ce49fafb4d6c
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
