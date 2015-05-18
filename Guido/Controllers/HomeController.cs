@@ -7,7 +7,6 @@ using System.Web;
 using System.Web.Mvc;
 using GoogleMapsApi.StaticMaps;
 using Baza;
-
 namespace Guido.Controllers
 {
     public class HomeController : Controller
@@ -16,8 +15,10 @@ namespace Guido.Controllers
 
         public ActionResult Index()
         {
-            var city = db.City.Include(c => c.State);
-            return View(city.ToList());
+            dynamic mymodel = new ViewModel();
+            mymodel.City = db.City.Include(c => c.State);
+            mymodel.Place = db.Place.Include(v => v.City);
+            return View(mymodel);
         }
 
         public ActionResult About()

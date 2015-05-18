@@ -26,9 +26,11 @@ namespace Baza
         }
     
         public virtual DbSet<City> City { get; set; }
-        public virtual DbSet<Place> Place { get; set; }
-        public virtual DbSet<Route> Route { get; set; }
         public virtual DbSet<State> State { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
+        public virtual DbSet<RoutePoint> RoutePoint { get; set; }
+        public virtual DbSet<TypeOfPlace> TypeOfPlace { get; set; }
+        public virtual DbSet<Place> Place { get; set; }
+        public virtual DbSet<Route> Route { get; set; }
     }
 }

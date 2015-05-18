@@ -14,11 +14,15 @@ namespace Baza
     
     public partial class Route
     {
+        public Route()
+        {
+            this.RoutePoint = new HashSet<RoutePoint>();
+        }
+    
         public int ID { get; set; }
-        public int fk_Place { get; set; }
         public string typOfRoute { get; set; }
         public Nullable<System.TimeSpan> routeTime { get; set; }
     
-        public virtual Place Place { get; set; }
+        public virtual ICollection<RoutePoint> RoutePoint { get; set; }
     }
 }

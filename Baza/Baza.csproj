@@ -95,10 +95,16 @@
     <Compile Include="Route.cs">
       <DependentUpon>GuidoDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="RoutePoint.cs">
+      <DependentUpon>GuidoDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="State.cs">
       <DependentUpon>GuidoDB.tt</DependentUpon>
     </Compile>
     <Compile Include="sysdiagrams.cs">
+      <DependentUpon>GuidoDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TypeOfPlace.cs">
       <DependentUpon>GuidoDB.tt</DependentUpon>
     </Compile>
   </ItemGroup>
