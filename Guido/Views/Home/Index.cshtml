@@ -34,10 +34,10 @@
                         <ul class="nav tree">
                             <li>
 
-                                <a class="js-route" data-route="1" href="#">Ruta 1</a>
+                                <a onclick="calcRoute(1);" id="route1" href="#">Brzi obilazak centra</a>
                             </li>
                             <li>
-                                <a class="js-route" data-route="2" href="#">Ruta 2</a>
+                                <a onclick="calcRoute(2);" id="route2" href="#">Detaljan obilazak centra</a>
                             </li>
                         </ul>
                     </li>
@@ -51,7 +51,7 @@
                                         <a href="#">Kula Lotršćak</a>
                                     </li>
                                     <li>
-                                        <a href="#">Svenova jaja</a>
+                                        <a href="#">Hrvatsko narodno kazalište</a>
                                     </li>
                                 </ul>
                             <li>
@@ -72,8 +72,6 @@
         </div>
     </div>
     <div class="col-md-6">
-        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-
         <style type="text/css">
             #map-canvas {
                 height: 500px;
@@ -88,6 +86,10 @@
     var markers = [];
     var Placemodel;
     var opis;
+    window.directionsDisplay = new google.maps.DirectionsRenderer();
+    window.directionsService = new google.maps.DirectionsService();
+    var stepDisplay;
+    var PointMarkers = [];
 
     function initialize() {
         var mapCenter = new google.maps.LatLng(45.813209, 15.977283);
@@ -95,10 +97,10 @@
             zoom: 13,
             center: mapCenter,
             mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-       
-        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        }
 
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        directionsDisplay.setMap(map);
 
         // This event listener will call addMarker() when the map is clicked.
         google.maps.event.addListener(map, 'click', function (event) {
@@ -107,37 +109,54 @@
 
         // Adds a marker at the center of the map.
         addMarker(mapCenter);
-        //uzimanje iz baze...valjda
-        @foreach (Baza.Place place in Model.Place)
-            {
-                <text>try {
-            var lat = '@place.latitude';
-            var lng = '@place.longitude';
-            var type = '@place.typeOfPlace';
-            var opis = '@place.dscrb';
-            var name = '@place.name';
-            var adr = '@place.adress';
-            var pic = '@place.picture';
-            var Placemodel = {
-                "Name": name,
-                "Adress": adr,
-                "Description": opis,
-                "Latitude": lat,
-                "Longitude": lng,
-                "Type": type,
-                "Picture": pic
-            };
 
-        }
-        catch (err) { }</text>
-            }
-        
         // Sets the map on all markers in the array.
         function setAllMap(map) {
             for (var i = 0; i < markers.length; i++) {
                 markers[i].setMap(map);
             }
         }
+    }
+    //ajmo racunati rute
+    function calcRoute(ruta) {
+        if (ruta == 0)
+        {
+            ruta = zadnjaRuta;
+            } else {
+            window.zadnjaRuta = ruta;
+        }
+        var waypts = [];
+                var selectedMode = document.getElementById('travelType').value;
+        switch(zadnjaRuta) {
+            case 1:
+                //PointMarkers = @Html.Action("GetRoute", "Home", new { rt = 1 });
+                var start = new google.maps.LatLng(45.81324, 15.976808);
+                var end = new google.maps.LatLng(45.801028, 15.969941);
+                waypts.push({location:new google.maps.LatLng(45.816272, 15.973565), stopover:true});
+                waypts.push({location:new google.maps.LatLng(45.814553, 15.979264), stopover:true});
+                break;
+            case 2:
+                //PointMarkers = @Html.Action("GetRoute", "Home", new { rt = 2 });
+                var start = new google.maps.LatLng(45.816272, 15.973565);
+                var end = new google.maps.LatLng(45.776848, 15.979564);
+                waypts.push({location:new google.maps.LatLng(45.778771, 15.980921), stopover:true});
+                break;              
+                }
+                var request = {
+                    origin: start,
+                    destination: end,
+                    waypoints: waypts,
+                    optimizeWaypoints: true,
+
+                    travelMode: google.maps.TravelMode[selectedMode]
+                };
+                directionsService.route(request, function(response, status) {
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        directionsDisplay.setDirections(response);
+                    }
+                });
+        //alert(PointMarkers);
+
     }
 
     // Add a marker to the map and push to the array.
@@ -152,7 +171,6 @@
         });
 
         google.maps.event.addListener(marker, 'click', function () {
-            //infoWindow.open(map, marker);
             infowindow.open(map, marker);
             if (marker.getAnimation() != null) {
                 marker.setAnimation(null);
@@ -191,14 +209,22 @@
         <div id="map-canvas"></div>
     </div>
     <div class="col-xs-8 col-sm-6 col-md-2">
-        Level 3: .col-xs-8 .col-sm-6
+        <div id="travel_selector">
+            <p>
+                <strong>Način razgledavanja: </strong>
+                <select id="travelType" onchange="calcRoute(0);">
+                    <option value="WALKING">Pješice</option>
+                    <option value="DRIVING">Automobilom</option>
+                </select>
+            </p>
+        </div>
     </div>
 </div>
 
 <div class="row">
     <div class="col-sm-9">
         <button type="button" class="btn btn-primary btn-lg btn-block">GO!</button>
-        </div>
+    </div>
 </div>
 
 
