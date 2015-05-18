@@ -12,16 +12,14 @@ namespace Baza
     using System;
     using System.Collections.Generic;
     
-    public partial class State
+    public partial class RoutePoint
     {
-        public State()
-        {
-            this.City = new HashSet<City>();
-        }
+        public int IdRoutePoint { get; set; }
+        public int IdPlace { get; set; }
+        public int IdRoute { get; set; }
+        public Nullable<int> PositionInRoute { get; set; }
     
-        public int ID { get; set; }
-        public string stateName { get; set; }
-    
-        public virtual ICollection<City> City { get; set; }
+        public virtual Place Place { get; set; }
+        public virtual Route Route { get; set; }
     }
 }

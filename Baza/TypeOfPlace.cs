@@ -12,16 +12,16 @@ namespace Baza
     using System;
     using System.Collections.Generic;
     
-    public partial class State
+    public partial class TypeOfPlace
     {
-        public State()
+        public TypeOfPlace()
         {
-            this.City = new HashSet<City>();
+            this.Place = new HashSet<Place>();
         }
     
-        public int ID { get; set; }
-        public string stateName { get; set; }
+        public int IdTypeOfPlace { get; set; }
+        public string NameTypeOfPlace { get; set; }
     
-        public virtual ICollection<City> City { get; set; }
+        public virtual ICollection<Place> Place { get; set; }
     }
 }

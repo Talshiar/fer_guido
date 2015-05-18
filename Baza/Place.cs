@@ -16,18 +16,21 @@ namespace Baza
     {
         public Place()
         {
-            this.Route = new HashSet<Route>();
+            this.RoutePoint = new HashSet<RoutePoint>();
         }
     
         public int ID { get; set; }
         public int fk_City { get; set; }
-        public System.Data.Entity.Spatial.DbGeography longitude { get; set; }
-        public System.Data.Entity.Spatial.DbGeography latitude { get; set; }
-        public string typeOfPlace { get; set; }
+        public int typeOfPlace { get; set; }
         public string dscrb { get; set; }
         public byte[] picture { get; set; }
+        public double longitude { get; set; }
+        public double latitude { get; set; }
+        public string name { get; set; }
+        public string adress { get; set; }
     
         public virtual City City { get; set; }
-        public virtual ICollection<Route> Route { get; set; }
+        public virtual TypeOfPlace TypeOfPlace1 { get; set; }
+        public virtual ICollection<RoutePoint> RoutePoint { get; set; }
     }
 }

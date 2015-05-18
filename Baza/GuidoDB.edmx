@@ -19,20 +19,30 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="fk_City" Type="int" Nullable="false" />
-          <Property Name="longitude" Type="geography" Nullable="false" />
-          <Property Name="latitude" Type="geography" Nullable="false" />
-          <Property Name="typeOfPlace" Type="nvarchar" MaxLength="50" />
+          <Property Name="typeOfPlace" Type="int" Nullable="false" />
           <Property Name="dscrb" Type="nvarchar(max)" />
           <Property Name="picture" Type="image" />
+          <Property Name="longitude" Type="float" Nullable="false" />
+          <Property Name="latitude" Type="float" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="adress" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Route">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="fk_Place" Type="int" Nullable="false" />
-          <Property Name="typOfRoute" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="typOfRoute" Type="nchar" MaxLength="100" Nullable="false" />
           <Property Name="routeTime" Type="time" Precision="7" />
+        </EntityType>
+        <EntityType Name="RoutePoint">
+          <Key>
+            <PropertyRef Name="IdRoutePoint" />
+          </Key>
+          <Property Name="IdRoutePoint" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdPlace" Type="int" Nullable="false" />
+          <Property Name="IdRoute" Type="int" Nullable="false" />
+          <Property Name="PositionInRoute" Type="int" />
         </EntityType>
         <EntityType Name="State">
           <Key>
@@ -50,6 +60,13 @@
           <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="TypeOfPlace">
+          <Key>
+            <PropertyRef Name="IdTypeOfPlace" />
+          </Key>
+          <Property Name="IdTypeOfPlace" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NameTypeOfPlace" Type="varchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_City_State">
           <End Role="State" Type="Self.State" Multiplicity="1" />
@@ -75,15 +92,39 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Route_Place">
+        <Association Name="FK_Place_TypeOfPlace">
+          <End Role="TypeOfPlace" Type="Self.TypeOfPlace" Multiplicity="1" />
+          <End Role="Place" Type="Self.Place" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeOfPlace">
+              <PropertyRef Name="IdTypeOfPlace" />
+            </Principal>
+            <Dependent Role="Place">
+              <PropertyRef Name="typeOfPlace" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RoutePoint_Place">
           <End Role="Place" Type="Self.Place" Multiplicity="1" />
-          <End Role="Route" Type="Self.Route" Multiplicity="*" />
+          <End Role="RoutePoint" Type="Self.RoutePoint" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Place">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="Route">
-              <PropertyRef Name="fk_Place" />
+            <Dependent Role="RoutePoint">
+              <PropertyRef Name="IdPlace" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RoutePoint_Route">
+          <End Role="Route" Type="Self.Route" Multiplicity="1" />
+          <End Role="RoutePoint" Type="Self.RoutePoint" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Route">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RoutePoint">
+              <PropertyRef Name="IdRoute" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -91,8 +132,10 @@
           <EntitySet Name="City" EntityType="Self.City" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Place" EntityType="Self.Place" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Route" EntityType="Self.Route" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RoutePoint" EntityType="Self.RoutePoint" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="State" EntityType="Self.State" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TypeOfPlace" EntityType="Self.TypeOfPlace" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_City_State" Association="Self.FK_City_State">
             <End Role="State" EntitySet="State" />
             <End Role="City" EntitySet="City" />
@@ -101,9 +144,17 @@
             <End Role="City" EntitySet="City" />
             <End Role="Place" EntitySet="Place" />
           </AssociationSet>
-          <AssociationSet Name="FK_Route_Place" Association="Self.FK_Route_Place">
+          <AssociationSet Name="FK_Place_TypeOfPlace" Association="Self.FK_Place_TypeOfPlace">
+            <End Role="TypeOfPlace" EntitySet="TypeOfPlace" />
             <End Role="Place" EntitySet="Place" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoutePoint_Place" Association="Self.FK_RoutePoint_Place">
+            <End Role="Place" EntitySet="Place" />
+            <End Role="RoutePoint" EntitySet="RoutePoint" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoutePoint_Route" Association="Self.FK_RoutePoint_Route">
             <End Role="Route" EntitySet="Route" />
+            <End Role="RoutePoint" EntitySet="RoutePoint" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -118,31 +169,7 @@
           <Property Name="fk_State" Type="Int32" Nullable="false" />
           <Property Name="cityName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="State" Relationship="Self.FK_City_State" FromRole="City" ToRole="State" />
-          <NavigationProperty Name="Place" Relationship="Self.FK_Place_City" FromRole="City" ToRole="Place" />
-        </EntityType>
-        <EntityType Name="Place">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="fk_City" Type="Int32" Nullable="false" />
-          <Property Name="longitude" Type="Geography" Nullable="false" />
-          <Property Name="latitude" Type="Geography" Nullable="false" />
-          <Property Name="typeOfPlace" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="dscrb" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="picture" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <NavigationProperty Name="City" Relationship="Self.FK_Place_City" FromRole="Place" ToRole="City" />
-          <NavigationProperty Name="Route" Relationship="Self.FK_Route_Place" FromRole="Place" ToRole="Route" />
-        </EntityType>
-        <EntityType Name="Route">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="fk_Place" Type="Int32" Nullable="false" />
-          <Property Name="typOfRoute" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
-          <Property Name="routeTime" Type="Time" Precision="7" />
-          <NavigationProperty Name="Place" Relationship="Self.FK_Route_Place" FromRole="Route" ToRole="Place" />
+          <NavigationProperty Name="Place" Relationship="GuidoModel.FK_Place_City" FromRole="City" ToRole="Place" />
         </EntityType>
         <EntityType Name="State">
           <Key>
@@ -174,9 +201,83 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="GuidoEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="City" EntityType="Self.City" />
+          <EntitySet Name="State" EntityType="Self.State" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <AssociationSet Name="FK_City_State" Association="Self.FK_City_State">
+            <End Role="State" EntitySet="State" />
+            <End Role="City" EntitySet="City" />
+          </AssociationSet>
+          <EntitySet Name="RoutePoint" EntityType="GuidoModel.RoutePoint" />
+          <EntitySet Name="TypeOfPlace" EntityType="GuidoModel.TypeOfPlace" />
+          <EntitySet Name="Place" EntityType="GuidoModel.Place" />
+          <EntitySet Name="Route" EntityType="GuidoModel.Route" />
+          <AssociationSet Name="FK_Place_City" Association="GuidoModel.FK_Place_City">
+            <End Role="City" EntitySet="City" />
+            <End Role="Place" EntitySet="Place" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Place_TypeOfPlace" Association="GuidoModel.FK_Place_TypeOfPlace">
+            <End Role="TypeOfPlace" EntitySet="TypeOfPlace" />
+            <End Role="Place" EntitySet="Place" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoutePoint_Place" Association="GuidoModel.FK_RoutePoint_Place">
+            <End Role="Place" EntitySet="Place" />
+            <End Role="RoutePoint" EntitySet="RoutePoint" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoutePoint_Route" Association="GuidoModel.FK_RoutePoint_Route">
+            <End Role="Route" EntitySet="Route" />
+            <End Role="RoutePoint" EntitySet="RoutePoint" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="RoutePoint">
+          <Key>
+            <PropertyRef Name="IdRoutePoint" />
+          </Key>
+          <Property Name="IdRoutePoint" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdPlace" Type="Int32" Nullable="false" />
+          <Property Name="IdRoute" Type="Int32" Nullable="false" />
+          <Property Name="PositionInRoute" Type="Int32" />
+          <NavigationProperty Name="Place" Relationship="GuidoModel.FK_RoutePoint_Place" FromRole="RoutePoint" ToRole="Place" />
+          <NavigationProperty Name="Route" Relationship="GuidoModel.FK_RoutePoint_Route" FromRole="RoutePoint" ToRole="Route" />
+        </EntityType>
+        <EntityType Name="TypeOfPlace">
+          <Key>
+            <PropertyRef Name="IdTypeOfPlace" />
+          </Key>
+          <Property Name="IdTypeOfPlace" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameTypeOfPlace" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Place" Relationship="GuidoModel.FK_Place_TypeOfPlace" FromRole="TypeOfPlace" ToRole="Place" />
+        </EntityType>
+        <EntityType Name="Place">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fk_City" Type="Int32" Nullable="false" />
+          <Property Name="typeOfPlace" Type="Int32" Nullable="false" />
+          <Property Name="dscrb" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="picture" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="longitude" Type="Double" Nullable="false" />
+          <Property Name="latitude" Type="Double" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="adress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="City" Relationship="GuidoModel.FK_Place_City" FromRole="Place" ToRole="City" />
+          <NavigationProperty Name="TypeOfPlace1" Relationship="GuidoModel.FK_Place_TypeOfPlace" FromRole="Place" ToRole="TypeOfPlace" />
+          <NavigationProperty Name="RoutePoint" Relationship="GuidoModel.FK_RoutePoint_Place" FromRole="Place" ToRole="RoutePoint" />
+        </EntityType>
+        <EntityType Name="Route">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="typOfRoute" Type="String" Nullable="false" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="routeTime" Type="Time" Precision="7" />
+          <NavigationProperty Name="RoutePoint" Relationship="GuidoModel.FK_RoutePoint_Route" FromRole="Route" ToRole="RoutePoint" />
+        </EntityType>
         <Association Name="FK_Place_City">
-          <End Role="City" Type="Self.City" Multiplicity="1" />
-          <End Role="Place" Type="Self.Place" Multiplicity="*" />
+          <End Type="GuidoModel.City" Role="City" Multiplicity="1" />
+          <End Type="GuidoModel.Place" Role="Place" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="City">
               <PropertyRef Name="ID" />
@@ -186,37 +287,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Route_Place">
-          <End Role="Place" Type="Self.Place" Multiplicity="1" />
-          <End Role="Route" Type="Self.Route" Multiplicity="*" />
+        <Association Name="FK_Place_TypeOfPlace">
+          <End Type="GuidoModel.TypeOfPlace" Role="TypeOfPlace" Multiplicity="1" />
+          <End Type="GuidoModel.Place" Role="Place" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeOfPlace">
+              <PropertyRef Name="IdTypeOfPlace" />
+            </Principal>
+            <Dependent Role="Place">
+              <PropertyRef Name="typeOfPlace" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RoutePoint_Place">
+          <End Type="GuidoModel.Place" Role="Place" Multiplicity="1" />
+          <End Type="GuidoModel.RoutePoint" Role="RoutePoint" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Place">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="Route">
-              <PropertyRef Name="fk_Place" />
+            <Dependent Role="RoutePoint">
+              <PropertyRef Name="IdPlace" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="GuidoEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="City" EntityType="Self.City" />
-          <EntitySet Name="Place" EntityType="Self.Place" />
-          <EntitySet Name="Route" EntityType="Self.Route" />
-          <EntitySet Name="State" EntityType="Self.State" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
-          <AssociationSet Name="FK_City_State" Association="Self.FK_City_State">
-            <End Role="State" EntitySet="State" />
-            <End Role="City" EntitySet="City" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Place_City" Association="Self.FK_Place_City">
-            <End Role="City" EntitySet="City" />
-            <End Role="Place" EntitySet="Place" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Route_Place" Association="Self.FK_Route_Place">
-            <End Role="Place" EntitySet="Place" />
-            <End Role="Route" EntitySet="Route" />
-          </AssociationSet>
-        </EntityContainer>
+        <Association Name="FK_RoutePoint_Route">
+          <End Type="GuidoModel.Route" Role="Route" Multiplicity="1" />
+          <End Type="GuidoModel.RoutePoint" Role="RoutePoint" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Route">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RoutePoint">
+              <PropertyRef Name="IdRoute" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -229,29 +335,6 @@
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="fk_State" ColumnName="fk_State" />
                 <ScalarProperty Name="cityName" ColumnName="cityName" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Place">
-            <EntityTypeMapping TypeName="GuidoModel.Place">
-              <MappingFragment StoreEntitySet="Place">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="fk_City" ColumnName="fk_City" />
-                <ScalarProperty Name="longitude" ColumnName="longitude" />
-                <ScalarProperty Name="latitude" ColumnName="latitude" />
-                <ScalarProperty Name="typeOfPlace" ColumnName="typeOfPlace" />
-                <ScalarProperty Name="dscrb" ColumnName="dscrb" />
-                <ScalarProperty Name="picture" ColumnName="picture" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Route">
-            <EntityTypeMapping TypeName="GuidoModel.Route">
-              <MappingFragment StoreEntitySet="Route">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="fk_Place" ColumnName="fk_Place" />
-                <ScalarProperty Name="typOfRoute" ColumnName="typOfRoute" />
-                <ScalarProperty Name="routeTime" ColumnName="routeTime" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -271,6 +354,48 @@
                 <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RoutePoint">
+            <EntityTypeMapping TypeName="GuidoModel.RoutePoint">
+              <MappingFragment StoreEntitySet="RoutePoint">
+                <ScalarProperty Name="PositionInRoute" ColumnName="PositionInRoute" />
+                <ScalarProperty Name="IdRoute" ColumnName="IdRoute" />
+                <ScalarProperty Name="IdPlace" ColumnName="IdPlace" />
+                <ScalarProperty Name="IdRoutePoint" ColumnName="IdRoutePoint" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TypeOfPlace">
+            <EntityTypeMapping TypeName="GuidoModel.TypeOfPlace">
+              <MappingFragment StoreEntitySet="TypeOfPlace">
+                <ScalarProperty Name="NameTypeOfPlace" ColumnName="NameTypeOfPlace" />
+                <ScalarProperty Name="IdTypeOfPlace" ColumnName="IdTypeOfPlace" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Place">
+            <EntityTypeMapping TypeName="GuidoModel.Place">
+              <MappingFragment StoreEntitySet="Place">
+                <ScalarProperty Name="adress" ColumnName="adress" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="latitude" ColumnName="latitude" />
+                <ScalarProperty Name="longitude" ColumnName="longitude" />
+                <ScalarProperty Name="picture" ColumnName="picture" />
+                <ScalarProperty Name="dscrb" ColumnName="dscrb" />
+                <ScalarProperty Name="typeOfPlace" ColumnName="typeOfPlace" />
+                <ScalarProperty Name="fk_City" ColumnName="fk_City" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Route">
+            <EntityTypeMapping TypeName="GuidoModel.Route">
+              <MappingFragment StoreEntitySet="Route">
+                <ScalarProperty Name="routeTime" ColumnName="routeTime" />
+                <ScalarProperty Name="typOfRoute" ColumnName="typOfRoute" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
