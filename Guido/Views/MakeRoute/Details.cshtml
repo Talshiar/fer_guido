@@ -1,0 +1,42 @@
+﻿@model Baza.RoutePoint
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>RoutePoint</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PositionInRoute)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PositionInRoute)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Place.dscrb)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Place.dscrb)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Route.typOfRoute)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Route.typOfRoute)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.IdRoutePoint }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

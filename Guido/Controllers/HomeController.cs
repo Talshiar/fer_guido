@@ -34,5 +34,25 @@ namespace Guido.Controllers
 
             return View();
         }
+
+        public ActionResult GetRoute(string rt)
+        {
+            int myRt = Convert.ToInt32(rt);
+            double povratni = 0;
+            var routes =
+                from o in db.RoutePoint
+                where o.IdRoute == myRt
+                select new
+                {
+                    longitude = o.Place.longitude,
+                    latitude = o.Place.latitude
+                };
+            foreach (var koord in routes)
+            {
+                
+                povratni = koord.longitude;
+            }
+            return Content(povratni.ToString());
+        }
     }
 }
