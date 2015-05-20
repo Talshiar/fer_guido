@@ -51,16 +51,16 @@
                         <label label-default="" class="tree-toggle nav-header">Znamenitosti</label>
                         <ul class="nav tree">
                             <li>
-                                    @foreach (var typeOfPlace in Model.TypeOfPlace)
-                                    {
-                                        <label label-default="" class="tree-toggle nav-header">@Html.DisplayFor(modelItem => typeOfPlace.NameTypeOfPlace) </label>
-                                        <ul class="nav tree">
-                                            @*@foreach (var place in Model.Place)
-                                            {
-                                                <li>@Html.DisplayFor(modelItem => place.name)</li>
-                                            }*@
-                                        </ul>
-                                    }
+                                   @* @foreach (var typeOfPlace in Model.TypeOfPlace)
+    {
+        <label label-default="" class="tree-toggle nav-header">@Html.DisplayFor(modelItem => typeOfPlace.NameTypeOfPlace) </label>
+        <ul class="nav tree">
+            @foreach (var place in Model.Place)
+            {
+                <li>@Html.DisplayFor(modelItem => place.name)</li>
+            }
+        </ul>
+    }*@
                                 <label label-default="" class="tree-toggle nav-header">Povijesne</label>
                                 <ul class="nav tree">
                                     <li>
@@ -248,7 +248,15 @@
         <div id="map-canvas"></div>
     </div>
     <div class="col-xs-8 col-sm-6 col-md-2">
-        Level 3: .col-xs-8 .col-sm-6
+        <div id="travel_selector">
+            <p>
+                <strong>Način razgledavanja: </strong>
+                <select id="travelType" onchange="calcRoute(0);">
+                    <option value="WALKING">Pješice</option>
+                    <option value="DRIVING">Automobilom</option>
+                </select>
+            </p>
+        </div>
             <script type="text/javascript">
                 function UpdateLabel() {
                     document.getElementById("infoLabel").innerText = "kliknuo si gumb, bravo";
