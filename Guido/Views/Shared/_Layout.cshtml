@@ -12,7 +12,6 @@
     @RenderSection("scripts", required: false)
 
 </head>
-
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top" style='background: #005A31;'>
         <div class="container">
@@ -32,7 +31,6 @@
                     <li>@Html.ActionLink("Kontakt", "Contact", "Home")</li>
                     <li>@Html.ActionLink("O nama", "About", "Home")</li>
                 </ul>
-                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
@@ -40,16 +38,18 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Guido, By Sintaksni Dijabetičari</p>
+            <p>&copy; @DateTime.Now.Year - Guido, by Sintaksni Dijabetičari</p>
         </footer>
     </div>
-
+  
     <script>
+
         $('.tree-toggle').click(function () {
-            $(this).parent().children('ul.tree').slideToggle(200);
+            $(this).parent().children('ul.tree').toggle(200);
+            $(this).children('ul.tree').toggle(20);
         });
         $(function () {
-            $('.tree-toggle').parent().children('ul.tree').slideToggle(200);
+            $('.tree-toggle').parent().children('ul.tree').toggle(200);
         })
     </script>
     <style css>
