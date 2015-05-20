@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top" style='background: #005A31;'>
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -24,12 +24,13 @@
                 </button>
                 @Html.ActionLink("Guido", "Index", "Home", null, new { @class = "navbar-brand" })
             </div>
-            <div class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse" style='background: #005A31'>
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Početna", "Index", "Home")</li>
                     <li>@Html.ActionLink("Popis gradova", "Index", "Cities")</li>
                     <li>@Html.ActionLink("Popis mjesta", "Index", "Places")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Kontakt", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("O nama", "About", "Home")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -43,13 +44,13 @@
         </footer>
     </div>
 
-        <script>
-            $('.tree-toggle').click(function () {
-                $(this).parent().children('ul.tree').slideToggle(200);
-            });
-            $(function () {
-                $('.tree-toggle').parent().children('ul.tree').slideToggle(200);
-            })
+    <script>
+        $('.tree-toggle').click(function () {
+            $(this).parent().children('ul.tree').slideToggle(200);
+        });
+        $(function () {
+            $('.tree-toggle').parent().children('ul.tree').slideToggle(200);
+        })
     </script>
     <style css>
         /* 1st level */
@@ -58,7 +59,7 @@
         }
 
         .tree > li > a {
-            color: darkseagreen;
+            color: #A8CD1B;
         }
         /* 2nd level */
         .tree > li > label {
@@ -67,10 +68,11 @@
 
         /* 3rd level */
         .tree > li > ul > li > a {
-            color: lawngreen;
+            color: #A8CD1B;
             font-size: 10pt;
             margin-left: 20px;
         }
     </style>
 </body>
+
 </html>

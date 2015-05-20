@@ -21,19 +21,20 @@ namespace Guido.Controllers
             mymodel.City = db.City.Include(c => c.State);
             mymodel.Place = db.Place.Include(v => v.City);
             mymodel.TypeOfPlace = db.TypeOfPlace;
+            mymodel.Route = db.Route;
             return View(mymodel);
         }
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Više o Guido projektu.";
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Kontaktirajte članove tima.";
 
             return View();
         }
