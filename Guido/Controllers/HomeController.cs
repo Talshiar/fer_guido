@@ -36,6 +36,8 @@ namespace Guido.Controllers
 
             return View();
         }
+
+        //Za racunanje ruta
         [HttpGet]
         public ActionResult GetRoute(string rt)
         {
