@@ -39,21 +39,41 @@ namespace Guido.Controllers
 
         //Za racunanje ruta
         [HttpGet]
-        public ActionResult GetRoute(string rt)
+        public ActionResult GetRoute()
         {
-            int myRt = Convert.ToInt32(rt);
+            var routePoints = new
+            {
+                RouteId = new LinkedList<int>(),
+                Position = new LinkedList<int>(),
+                Longitude = new LinkedList<double>(),
+                Latitude = new LinkedList<double>(),
+                Name = new LinkedList<string>(),
+                Address = new LinkedList<string>(),
+                Description = new LinkedList<string>()
+            };
             var routes =
                 from o in db.RoutePoint
-                where o.IdRoute == myRt
                 select new
                 {
-                    o.PositionInRoute,
-                    o.Place.longitude,
-                    o.Place.latitude,
-                    o.Place.name,
-                    o.Place.adress,
-                    o.Place.dscrb
+                    idR = o.IdRoute,
+                    pos = (int)o.PositionInRoute,
+                    lng = o.Place.longitude,
+                    lat = o.Place.latitude,
+                    nm = o.Place.name,
+                    adr = o.Place.adress,
+                    dsc = o.Place.dscrb
                 };
+            foreach (var n in routes)
+            {
+                routePoints.RouteId.AddLast(n.idR);
+                routePoints.Position.AddLast(n.pos);
+                routePoints.Longitude.AddLast(n.lng);
+                routePoints.Latitude.AddLast(n.lat);
+                routePoints.Name.AddLast(n.nm);
+                routePoints.Address.AddLast(n.adr);
+                routePoints.Description.AddLast(n.dsc);
+
+            }
             return Json(routes, JsonRequestBehavior.AllowGet);
         }
 
