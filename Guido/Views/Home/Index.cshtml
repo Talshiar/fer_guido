@@ -82,13 +82,50 @@
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCp3aNN7IXH_AmU59UH2g1s5QC4N2e7r6o&sensor=true"></script>
 
         <script type="text/javascript">
-    var map;
-    var markers = [];
-    var Placemodel;
-    var opis;
-    window.directionsDisplay = new google.maps.DirectionsRenderer();
-    window.directionsService = new google.maps.DirectionsService();
-    var stepDisplay;
+ 
+            var map;
+            var markers = [];
+            window.directionsDisplay = new google.maps.DirectionsRenderer();
+            window.directionsService = new google.maps.DirectionsService();
+            var stepDisplay;
+            var PointMarkers = [];
+    //ovje se u data vadi iz baze Place podaci        
+    var url = '/Home/GetJSONData';
+    $.post(url,
+    null,
+    function (dataPlace) {
+        var i = 0;
+
+        // Iterate through the JSON array
+        
+
+        while (dataPlace.Name[i] != null) {
+            //alert(dataPlace.Name[i]);
+            lokacija = new google.maps.LatLng(dataPlace.Latitude[i], dataPlace.Longitude[i]);
+            markers.push(dataPlace.Name[i], dataPlace.Address[i], dataPlace.Description[i], lokacija);
+            //alert(markers[i]);
+            i++;
+            //var valuesToPush = new Array();
+
+            //valuesToPush[0] = data.Name[i];
+            //valuesToPush[1] = data.Adress[i];
+            //valuesToPush[2] = data.Description[i];
+            //valuesToPush[3] = data.Latitude[i];
+            //valuesToPush[4] = data.Longitude[i];
+            //valuesToPush[5] = data.PlaceType[i];
+            
+        }
+    
+                    
+
+    }
+
+);
+
+
+
+
+
 
     function initialize() {
         var mapCenter = new google.maps.LatLng(45.813209, 15.977283);
@@ -124,14 +161,14 @@
                 var selectedMode = document.getElementById('travelType').value;
         switch(zadnjaRuta) {
             case 1:
-                //var RoutePoints = @@Html.Action("GetRoute", "Home", new { rt = 1 });
+                //PointMarkers = @Html.Action("GetRoute", "Home", new { rt = 1 });
                 var start = new google.maps.LatLng(45.81324, 15.976808);
                 var end = new google.maps.LatLng(45.801028, 15.969941);
                 waypts.push({location:new google.maps.LatLng(45.816272, 15.973565), stopover:true});
                 waypts.push({location:new google.maps.LatLng(45.814553, 15.979264), stopover:true});
                 break;
             case 2:
-                //var RoutePoints = @@Html.Action("GetRoute", "Home", new { rt = 2 });
+                //PointMarkers = @Html.Action("GetRoute", "Home", new { rt = 2 });
                 var start = new google.maps.LatLng(45.816272, 15.973565);
                 var end = new google.maps.LatLng(45.776848, 15.979564);
                 waypts.push({location:new google.maps.LatLng(45.778771, 15.980921), stopover:true});
@@ -155,14 +192,14 @@
     }
 
     // Add a marker to the map and push to the array.
-    function addMarker(location) {
+    function addMarker(location,desc) {
         var marker = new google.maps.Marker({
             position: location,
             map: map
         });
         markers.push(marker);
         var infowindow = new google.maps.InfoWindow({
-            content: "zaštoooo"
+            content: desc
         });
 
         google.maps.event.addListener(marker, 'click', function () {

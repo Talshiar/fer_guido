@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using GoogleMapsApi.StaticMaps;
 using Baza;
+using System.Data.SqlClient;
+
 namespace Guido.Controllers
 {
     public class HomeController : Controller
@@ -51,6 +53,49 @@ namespace Guido.Controllers
                     o.Place.dscrb
                 };
             return Json(routes, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetJSONData()
+        {
+               
+            // Create a JSON document setting the string array to the count of the rows
+            var Places = new {
+                Name = new LinkedList<string>(),
+                Address = new LinkedList<string>(),
+                Description = new LinkedList<string>(),
+                PlaceType = new LinkedList<int>(),
+                Latitude = new LinkedList<double>(),
+                Longitude = new LinkedList<double>()
+            };
+
+            var allPlaces =
+               from p in db.Place
+               select new
+               {
+                   name = p.name,
+                   adrs = p.adress,
+                   lng = p.longitude,
+                   lat = p.latitude,
+                   descr = p.dscrb,
+                   type = p.typeOfPlace,
+               };
+
+            
+            foreach (var n in allPlaces)
+            {
+                Places.Name.AddLast(n.name);
+                Places.Address.AddLast(n.adrs);
+                Places.Description.AddLast(n.descr);
+                Places.Latitude.AddLast(n.lat);
+                Places.Longitude.AddLast(n.lng);
+                Places.PlaceType.AddLast(n.type);
+                
+            }
+            
+
+            // Return the JSON document to the view
+            return Json(Places);
+
         }
     }
 }
