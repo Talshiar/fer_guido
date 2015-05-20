@@ -84,11 +84,18 @@
         <script type="text/javascript">
  
             var map;
-            var markers = [];
+            var markers = {
+                'nameM': [],
+                'descriptionM': [],
+                'locationM': [],
+                'addressM': [],
+                'typePlaceM': []
+            };
             window.directionsDisplay = new google.maps.DirectionsRenderer();
             window.directionsService = new google.maps.DirectionsService();
             var stepDisplay;
             var PointMarkers = [];
+
     //ovje se u data vadi iz baze Place podaci        
     var url = '/Home/GetJSONData';
     $.post(url,
@@ -101,10 +108,15 @@
 
         while (dataPlace.Name[i] != null) {
             //alert(dataPlace.Name[i]);
-            lokacija = new google.maps.LatLng(dataPlace.Latitude[i], dataPlace.Longitude[i]);
-            markers.push(dataPlace.Name[i], dataPlace.Address[i], dataPlace.Description[i], lokacija);
-            //alert(markers[i]);
+            var lokacija = new google.maps.LatLng(dataPlace.Latitude[i], dataPlace.Longitude[i]);
+            markers.nameM[i] = dataPlace.Name[i];
+            markers.descriptionM[i] = dataPlace.Description[i];
+            markers.addressM[i] = dataPlace.Address[i];
+            markers.locationM[i] = lokacija;
+            markers.typePlaceM[i] = dataPlace.PlaceType[i];
+            //alert(markers.nameM[i] + '::::' + markers.descriptionM[i] + '::::' + markers.addressM[i] + '::::' + markers.locationM[i] + '::::' + markers.typePlaceM[i]);
             i++;
+            
             //var valuesToPush = new Array();
 
             //valuesToPush[0] = data.Name[i];
