@@ -26,61 +26,34 @@
 <div class="container">
     <div class="col-xs-8 col-sm-6 col-md-2">
         <div class="well well-sm">
-
             <div>
                 <ul class="nav">
                     <li>
-                        <label label-default="" class="tree-toggle nav-header">Postojeće rute</label>
+                        <label class="tree-toggle nav-header">Postojeće rute</label>
                         <ul class="nav tree">
-                            <li>
-
-                                <a onclick="calcRoute(1);" id="route1" href="#">Brzi obilazak centra</a>
-                            </li>
-                            <li>
-                                <a onclick="calcRoute(2);" id="route2" href="#">Detaljan obilazak centra</a>
-                            </li>
-                                @*@foreach (Baza.Route item in Model.Route)
-                                    {
-                                        <li>
-                                            <a href="#">item.typOfRoute</a>
-                                        </li>
-                                    }*@
+                            @foreach (var route in Model.Route)
+                            {
+                                <li><label id="@route.ID" onclick="calcRoute(@route.ID)">@Html.DisplayFor(modelItem => route.typOfRoute)</label></li>
+                            }
                         </ul>
                     </li>
                     <li>
-                        <label label-default="" class="tree-toggle nav-header">Znamenitosti</label>
-                        <ul class="nav tree">
+                        <label class="tree-toggle nav-header">Znamenitosti</label>
+                        <ul class="nav nav-list tree">
                             <li>
                                     @foreach (var typeOfPlace in Model.TypeOfPlace)
                                     {
-                                        <label label-default="" class="tree-toggle nav-header">@Html.DisplayFor(modelItem => typeOfPlace.NameTypeOfPlace) </label>
-                                        <ul class="nav tree">
-                                            @*@foreach (var place in Model.Place)
+                                        <label class="tree-toggle nav-header">@Html.DisplayFor(modelItem => typeOfPlace.NameTypeOfPlace) </label>
+                                        <ul class="nav nav-list tree">
+                                            @foreach (var place in Model.Place)
                                             {
-                                                <li>@Html.DisplayFor(modelItem => place.name)</li>
-                                            }*@
+                                                if (place.typeOfPlace == typeOfPlace.IdTypeOfPlace) { 
+                                                <li><label style="">@Html.DisplayFor(modelItem => place.name)</label></li>
+                                                }
+                                            }
                                         </ul>
                                     }
-                                <label label-default="" class="tree-toggle nav-header">Povijesne</label>
-                                <ul class="nav tree">
-                                    <li>
-                                        <a href="#">Kula Lotršćak</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Svenova jaja</a>
-                                    </li>
-                                </ul>
-                            <li>
-                                <label label-default="" class="tree-toggle nav-header">Moderne</label>
-                                <ul class="nav tree">
-                                    <li>
-                                        <a href="#">MSU</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Bandićeve fontane</a>
-                                    </li>
-                                </ul>
-                            </li>
+                             </li>   
                         </ul>
                     </li>
                 </ul>
@@ -248,10 +221,11 @@
         <div id="map-canvas"></div>
     </div>
     <div class="col-xs-8 col-sm-6 col-md-2">
+        <label id="infoLabel"/>
         Level 3: .col-xs-8 .col-sm-6
             <script type="text/javascript">
-                function UpdateLabel() {
-                    document.getElementById("infoLabel").innerText = "kliknuo si gumb, bravo";
+                function UpdateLabel(ele) {
+                    document.getElementById("infoLabel").innerText = ele;
                 }
             </script>
     </div>

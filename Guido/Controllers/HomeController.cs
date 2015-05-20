@@ -20,6 +20,8 @@ namespace Guido.Controllers
             dynamic mymodel = new ViewModel();
             mymodel.City = db.City.Include(c => c.State);
             mymodel.Place = db.Place.Include(v => v.City);
+            mymodel.TypeOfPlace = db.TypeOfPlace;
+            mymodel.Route = db.Route;
             return View(mymodel);
         }
 
