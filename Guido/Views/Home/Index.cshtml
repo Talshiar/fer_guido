@@ -38,7 +38,7 @@
                             }
                         </ul>
                     </li>
-                    <li>
+                    <li><hr>
                         <label class="tree-toggle nav-header">Znamenitosti</label>
                         <ul class="nav tree">
                             <li>
@@ -58,223 +58,197 @@
                                 }
                         </li>
                     </ul>
-                        @*<div class="container">       
-                            <label label-default="" class="tree-toggle nav-header">Responsive</label>
-                            <ul class="nav tree">
-                              <li>
-                                <label label-default="" class="tree-toggle nav-header">Media Queries</label>
-                                <ul class="nav tree">
-                                  <li><a href="#">Text</a>
-                                  </li>
-                                  <li><a href="#">Images</a>
-                                  </li>
-                                  <li>
-                                    <label label-default="" class="tree-toggle nav-header">Mobile</label>
-                                    <ul class="nav tree">
-                                      <li><a href="#">iPhone</a>
-                                      </li>
-                                      <li><a href="#">Samsung</a>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </li>
-                            </ul>
-                          </li>
-                      </ul>
-                  </div>
-              </div>
-          </div>
-      </div>
-    </div>*@
                     </li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <style type="text/css">
-                #map-canvas {
-                    height: 500px;
+    <div class="col-md-6" style="border-left:1px solid #E6E6E6;height:500px">
+        <style type="text/css">
+            #map-canvas {
+                height: 500px;
+            }
+
+            #go-button {
+                position: absolute;
+            }
+        </style>
+
+        <!--Connect to the google maps api using your api key-->
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCp3aNN7IXH_AmU59UH2g1s5QC4N2e7r6o&sensor=true"></script>
+
+        <script type="text/javascript">
+
+            var map;
+            var markers = {
+                'nameM': [],
+                'descriptionM': [],
+                'locationM': [],
+                'addressM': [],
+                'typePlaceM': []
+            };
+            window.directionsDisplay = new google.maps.DirectionsRenderer();
+            window.directionsService = new google.maps.DirectionsService();
+            var stepDisplay;
+            var PointMarkers = [];
+
+            //ovdje se u data vadi iz baze Place podaci
+            var url = '/Home/GetJSONData';
+            $.post(url, null, function (dataPlace) {
+                var i = 0;
+                // Iterate through the JSON array
+                while (dataPlace.Name[i] != null) {
+                    //alert(dataPlace.Name[i]);
+                    var lokacija = new google.maps.LatLng(dataPlace.Latitude[i], dataPlace.Longitude[i]);
+                    markers.nameM[i] = dataPlace.Name[i];
+                    markers.descriptionM[i] = dataPlace.Description[i];
+                    markers.addressM[i] = dataPlace.Address[i];
+                    markers.locationM[i] = lokacija;
+                    markers.typePlaceM[i] = dataPlace.PlaceType[i];
+                    //alert(markers.nameM[i] + '::::' + markers.descriptionM[i] + '::::' + markers.addressM[i] + '::::' + markers.locationM[i] + '::::' + markers.typePlaceM[i]);
+                    i++;
                 }
-                #go-button {
-                    position: absolute;
-                    
+            });
+
+            function initialize() {
+                var mapCenter = new google.maps.LatLng(45.813209, 15.977283);
+                var mapOptions = {
+                    zoom: 13,
+                    center: mapCenter,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
                 }
-            </style>
 
-            <!--Connect to the google maps api using your api key-->
-            <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCp3aNN7IXH_AmU59UH2g1s5QC4N2e7r6o&sensor=true"></script>
+                map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+                directionsDisplay.setMap(map);
 
-            <script type="text/javascript">
-
-                var map;
-                var markers = {
-                    'nameM': [],
-                    'descriptionM': [],
-                    'locationM': [],
-                    'addressM': [],
-                    'typePlaceM': []
-                };
-                window.directionsDisplay = new google.maps.DirectionsRenderer();
-                window.directionsService = new google.maps.DirectionsService();
-                var stepDisplay;
-                var PointMarkers = [];
-
-                //ovdje se u data vadi iz baze Place podaci
-                var url = '/Home/GetJSONData';
-                $.post(url, null, function (dataPlace) {
-                    var i = 0;
-                    // Iterate through the JSON array
-                    while (dataPlace.Name[i] != null) {
-                        //alert(dataPlace.Name[i]);
-                        var lokacija = new google.maps.LatLng(dataPlace.Latitude[i], dataPlace.Longitude[i]);
-                        markers.nameM[i] = dataPlace.Name[i];
-                        markers.descriptionM[i] = dataPlace.Description[i];
-                        markers.addressM[i] = dataPlace.Address[i];
-                        markers.locationM[i] = lokacija;
-                        markers.typePlaceM[i] = dataPlace.PlaceType[i];
-                        //alert(markers.nameM[i] + '::::' + markers.descriptionM[i] + '::::' + markers.addressM[i] + '::::' + markers.locationM[i] + '::::' + markers.typePlaceM[i]);
-                        i++;
-                    }
+                // This event listener will call addMarker() when the map is clicked.
+                google.maps.event.addListener(map, 'click', function (event) {
+                    addMarker(event.latLng, "Odabrana lokacija");
                 });
 
-                function initialize() {
-                    var mapCenter = new google.maps.LatLng(45.813209, 15.977283);
-                    var mapOptions = {
-                        zoom: 13,
-                        center: mapCenter,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                // Adds a marker at the center of the map.
+                addMarker(mapCenter, "Glavni trg Josipa bana Jelačića");
+
+                // Sets the map on all markers in the array.
+
+            }
+            //ajmo racunati rute
+            function calcRoute(ruta) {
+                if (ruta == 0) {
+                    ruta = zadnjaRuta;
+                } else {
+                    window.zadnjaRuta = ruta;
+                }
+                var waypts = [];
+                var i = 0;
+                var selectedMode = document.getElementById('travelType').value;
+                var summaryPanel = document.getElementById('directions_panel');
+                window.opis = '';
+                summaryPanel.innerHTML = '';
+                $.getJSON('/Home/GetRoute', function (result) {
+                    summaryPanel.innerHTML += '<strong>Detalji rute:</strong>';
+                    while (result.Name[i] != null) {
+                        if (result.RouteId[i] == zadnjaRuta) {
+                            if (result.Position[i] == 1) {
+                                var start = new google.maps.LatLng(result.Longitude[i], result.Latitude[i]);
+                                opis = result.Description[i];
+                                summaryPanel.innerHTML += '<br><br>Polazište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
+                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis)">Opširnije</a><hr>';
+                            }
+                            else if (result.Position[i] == 0) {
+                                var end = new google.maps.LatLng(result.Longitude[i], result.Latitude[i]);
+                                summaryPanel.innerHTML += '<br>Odredište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
+                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis);">Opširnije</a><hr>';
+                            }
+                            else {
+                                waypts.push({ location: new google.maps.LatLng(result.Longitude[i], result.Latitude[i]), stopover: true });
+                                summaryPanel.innerHTML += '<br>Sljedeća lokacija: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
+                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis);">Opširnije</a><hr>';
+
+                            }
+                        }
+                        i++;
                     }
+                    var request = {
+                        origin: start,
+                        destination: end,
+                        waypoints: waypts,
+                        optimizeWaypoints: true,
 
-                    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-                    directionsDisplay.setMap(map);
+                        travelMode: google.maps.TravelMode[selectedMode]
+                    };
+                    directionsService.route(request, function (response, status) {
+                        if (status == google.maps.DirectionsStatus.OK) {
+                            directionsDisplay.setDirections(response);
 
-                    // This event listener will call addMarker() when the map is clicked.
-                    google.maps.event.addListener(map, 'click', function (event) {
-                        addMarker(event.latLng, "Odabrana lokacija");
+                        }
                     });
 
-                    // Adds a marker at the center of the map.
-                    addMarker(mapCenter, "Glavni trg Josipa bana Jelačića");
+                });
+            }
 
-                    // Sets the map on all markers in the array.
+            // Add a marker to the map and push to the array.
+            function addMarker(location, desc) {
+                var marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+                //markers.push(marker);
+                var infowindow = new google.maps.InfoWindow({
+                    content: desc
+                });
 
-                }
-                //ajmo racunati rute
-                function calcRoute(ruta) {
-                    if (ruta == 0) {
-                        ruta = zadnjaRuta;
+                google.maps.event.addListener(marker, 'click', function () {
+                    infowindow.open(map, marker);
+                    if (marker.getAnimation() != null) {
+                        marker.setAnimation(null);
                     } else {
-                        window.zadnjaRuta = ruta;
+                        marker.setAnimation(google.maps.Animation.BOUNCE);
                     }
-                    var waypts = [];
-                    var i = 0;
-                    var selectedMode = document.getElementById('travelType').value;
-                    var summaryPanel = document.getElementById('directions_panel');
-                    window.opis = '';
-                    summaryPanel.innerHTML = '';
-                    $.getJSON('/Home/GetRoute', function (result) {
-                        summaryPanel.innerHTML += '<strong>Detalji rute:</strong>';
-                        while (result.Name[i] != null) {
-                            if (result.RouteId[i] == zadnjaRuta) {
-                                if (result.Position[i] == 1) {
-                                    var start = new google.maps.LatLng(result.Longitude[i], result.Latitude[i]);
-                                    opis = result.Description[i];
-                                    summaryPanel.innerHTML += '<br><br>Polazište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
-                                    summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis)">Opširnije</a>';
-                                }
-                                else if (result.Position[i] == 0) {
-                                    var end = new google.maps.LatLng(result.Longitude[i], result.Latitude[i]);
-                                    summaryPanel.innerHTML += '<br><br>Odredište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
-                                    summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis);">Opširnije</a>';
-                                }
-                                else {
-                                    waypts.push({ location: new google.maps.LatLng(result.Longitude[i], result.Latitude[i]), stopover: true });
-                                    summaryPanel.innerHTML += '<br><br>Sljedeća lokacija: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
-                                    summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis);">Opširnije</a>';
-
-                                }
-                            }
-                            i++;
-                        }
-                        var request = {
-                            origin: start,
-                            destination: end,
-                            waypoints: waypts,
-                            optimizeWaypoints: true,
-
-                            travelMode: google.maps.TravelMode[selectedMode]
-                        };
-                        directionsService.route(request, function (response, status) {
-                            if (status == google.maps.DirectionsStatus.OK) {
-                                directionsDisplay.setDirections(response);
-
-                            }
-                        });
-
-                    });
-                }
-
-                // Add a marker to the map and push to the array.
-                function addMarker(location, desc) {
-                    var marker = new google.maps.Marker({
-                        position: location,
-                        map: map
-                    });
-                    //markers.push(marker);
-                    var infowindow = new google.maps.InfoWindow({
-                        content: desc
-                    });
-
-                    google.maps.event.addListener(marker, 'click', function () {
-                        infowindow.open(map, marker);
-                        if (marker.getAnimation() != null) {
-                            marker.setAnimation(null);
-                        } else {
-                            marker.setAnimation(google.maps.Animation.BOUNCE);
-                        }
-                    });
-                }
+                });
+            }
 
 
-                google.maps.event.addDomListener(window, 'load', initialize);
+            google.maps.event.addDomListener(window, 'load', initialize);
 
 
-                //Description tocaka u ruti
-                function Description(desc) {
-                    if (desc != null) alert("Detaljnije o mjestu: " + desc);
-                    else alert("Nema detaljnijih informacija.");
-                }
-            </script>
-            <div id="panel">
+            //Description tocaka u ruti
+            function Description(desc) {
+                if (desc != null) alert("Detaljnije o mjestu: " + desc);
+                else alert("Nema detaljnijih informacija.");
+            }
+        </script>
+        <div id="panel">
 
-            </div>
-            <div id="map-canvas"></div>
-            <div class="row">
-                <div class="col-md-offset-4">
-                    <button type="button" class="btn btn-primary" id="go-button" style="width: 180px; height: 40px; background-color: #005A31;  border:1px solid #000; font-size:110%" onclick="self.open('http://localhost:55152/MakeRoute')">Kreiraj svoju rutu!</button>
-                </div>
+        </div>
+        <div id="map-canvas"></div>
+        <hr>
+        <div class="row">
+            <div class="col-md-offset-4">
+                <button type="button" class="btn btn-primary" id="go-button" style="width: 180px; height: 40px; background-color: #005A31;  border:1px solid #000; font-size:110%" onclick="self.open('http://localhost:55152/MakeRoute')">Kreiraj svoju rutu!</button>
             </div>
         </div>
-        <div class="col-xs-8 col-sm-6 col-md-3">
-            <div id="travel_selector">
-                <p>
-                    <strong>Način razgledavanja: </strong>
-                    <select class="form-control" id="travelType" onchange="calcRoute(0);">
-                        <option value="WALKING">Pješice</option>
-                        <option value="DRIVING">Automobilom</option>
-                    </select>
-                </p>
-            </div>          
-                <div id="directions_panel" style="margin:20px;"></div>
+    </div>
 
-            <script type="text/javascript">
-                function UpdateLabel() {
-                    document.getElementById("infoLabel").innerText = "kliknuo si gumb, bravo";
-                }
-            </script>
+    <div class="col-xs-8 col-sm-6 col-md-3" style="border-left:1px solid #E6E6E6;height:500px">
+        <div id="travel_selector">
+            <p>
+                <strong>Način razgledavanja: </strong>
+                <select class="form-control" id="travelType" onchange="calcRoute(0);">
+                    <option value="WALKING">Pješice</option>
+                    <option value="DRIVING">Automobilom</option>
+                </select>
+            </p>
         </div>
+        <div id="directions_panel" style="margin:20px;"></div>
+
+        <script type="text/javascript">
+            function UpdateLabel() {
+                document.getElementById("infoLabel").innerText = "kliknuo si gumb, bravo";
+            }
+        </script>
+    </div>
+
     </div>
 
 
