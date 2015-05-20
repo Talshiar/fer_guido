@@ -82,14 +82,50 @@
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCp3aNN7IXH_AmU59UH2g1s5QC4N2e7r6o&sensor=true"></script>
 
         <script type="text/javascript">
-    var map;
-    var markers = [];
-    var Placemodel;
-    var opis;
-    window.directionsDisplay = new google.maps.DirectionsRenderer();
-    window.directionsService = new google.maps.DirectionsService();
-    var stepDisplay;
-    var PointMarkers = [];
+ 
+            var map;
+            var markers = [];
+            window.directionsDisplay = new google.maps.DirectionsRenderer();
+            window.directionsService = new google.maps.DirectionsService();
+            var stepDisplay;
+            var PointMarkers = [];
+    //ovje se u data vadi iz baze Place podaci        
+    var url = '/Home/GetJSONData';
+    $.post(url,
+    null,
+    function (dataPlace) {
+        var i = 0;
+
+        // Iterate through the JSON array
+        
+
+        while (dataPlace.Name[i] != null) {
+            //alert(dataPlace.Name[i]);
+            lokacija = new google.maps.LatLng(dataPlace.Latitude[i], dataPlace.Longitude[i]);
+            markers.push(dataPlace.Name[i], dataPlace.Address[i], dataPlace.Description[i], lokacija);
+            //alert(markers[i]);
+            i++;
+            //var valuesToPush = new Array();
+
+            //valuesToPush[0] = data.Name[i];
+            //valuesToPush[1] = data.Adress[i];
+            //valuesToPush[2] = data.Description[i];
+            //valuesToPush[3] = data.Latitude[i];
+            //valuesToPush[4] = data.Longitude[i];
+            //valuesToPush[5] = data.PlaceType[i];
+            
+        }
+    
+                    
+
+    }
+
+);
+
+
+
+
+
 
     function initialize() {
         var mapCenter = new google.maps.LatLng(45.813209, 15.977283);
@@ -156,14 +192,14 @@
     }
 
     // Add a marker to the map and push to the array.
-    function addMarker(location) {
+    function addMarker(location,desc) {
         var marker = new google.maps.Marker({
             position: location,
             map: map
         });
         markers.push(marker);
         var infowindow = new google.maps.InfoWindow({
-            content: "zaštoooo"
+            content: desc
         });
 
         google.maps.event.addListener(marker, 'click', function () {
