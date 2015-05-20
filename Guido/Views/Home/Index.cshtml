@@ -39,19 +39,35 @@
                             <li>
                                 <a onclick="calcRoute(2);" id="route2" href="#">Detaljan obilazak centra</a>
                             </li>
+                                @*@foreach (Baza.Route item in Model.Route)
+                                    {
+                                        <li>
+                                            <a href="#">item.typOfRoute</a>
+                                        </li>
+                                    }*@
                         </ul>
                     </li>
                     <li>
                         <label label-default="" class="tree-toggle nav-header">Znamenitosti</label>
                         <ul class="nav tree">
                             <li>
+                                    @foreach (var typeOfPlace in Model.TypeOfPlace)
+                                    {
+                                        <label label-default="" class="tree-toggle nav-header">@Html.DisplayFor(modelItem => typeOfPlace.NameTypeOfPlace) </label>
+                                        <ul class="nav tree">
+                                            @*@foreach (var place in Model.Place)
+                                            {
+                                                <li>@Html.DisplayFor(modelItem => place.name)</li>
+                                            }*@
+                                        </ul>
+                                    }
                                 <label label-default="" class="tree-toggle nav-header">Povijesne</label>
                                 <ul class="nav tree">
                                     <li>
                                         <a href="#">Kula Lotršćak</a>
                                     </li>
                                     <li>
-                                        <a href="#">Hrvatsko narodno kazalište</a>
+                                        <a href="#">Svenova jaja</a>
                                     </li>
                                 </ul>
                             <li>
@@ -96,16 +112,11 @@
             var stepDisplay;
             var PointMarkers = [];
 
-    //ovje se u data vadi iz baze Place podaci        
+    //ovdje se u data vadi iz baze Place podaci
     var url = '/Home/GetJSONData';
-    $.post(url,
-    null,
-    function (dataPlace) {
+    $.post(url, null, function (dataPlace) {
         var i = 0;
-
         // Iterate through the JSON array
-        
-
         while (dataPlace.Name[i] != null) {
             //alert(dataPlace.Name[i]);
             var lokacija = new google.maps.LatLng(dataPlace.Latitude[i], dataPlace.Longitude[i]);
@@ -134,11 +145,6 @@
 
 );
 
-
-
-
-
-
     function initialize() {
         var mapCenter = new google.maps.LatLng(45.813209, 15.977283);
         var mapOptions = {
@@ -163,27 +169,35 @@
     }
     //ajmo racunati rute
     function calcRoute(ruta) {
-        if (ruta == 0)
-        {
+        if (ruta == 0) {
             ruta = zadnjaRuta;
             } else {
             window.zadnjaRuta = ruta;
         }
         var waypts = [];
                 var selectedMode = document.getElementById('travelType').value;
-        switch(zadnjaRuta) {
+        switch (zadnjaRuta) {
             case 1:
-                //PointMarkers = @Html.Action("GetRoute", "Home", new { rt = 1 });
-                var start = new google.maps.LatLng(45.81324, 15.976808);
-                var end = new google.maps.LatLng(45.801028, 15.969941);
-                waypts.push({location:new google.maps.LatLng(45.816272, 15.973565), stopover:true});
-                waypts.push({location:new google.maps.LatLng(45.814553, 15.979264), stopover:true});
+                //PointMarkers = @@Html.Action("GetRoute", "Home", new { rt = 1 });
+                $.getJSON('home/GetRoute', function (result) {
+                    alert(result.RouteId);
+                    if (result.RouteId == 1) {
+                        if (result.Position == 1)
+                            var start = new google.maps.LatLng(result.Latitude, result.Longitude);
+                        if (result.Position == 4)
+                            var end = new google.maps.LatLng(result.Latitude, result.Longitude);
+                    }
+                });
+                //var start = new google.maps.LatLng(45.81324, 15.976808);
+                //var end = new google.maps.LatLng(45.801028, 15.969941);
+                waypts.push({ location: new google.maps.LatLng(45.816272, 15.973565), stopover: true });
+                waypts.push({ location: new google.maps.LatLng(45.814553, 15.979264), stopover: true });
                 break;
             case 2:
-                //PointMarkers = @Html.Action("GetRoute", "Home", new { rt = 2 });
+                //PointMarkers = @@Html.Action("GetRoute", "Home", new { rt = 2 });
                 var start = new google.maps.LatLng(45.816272, 15.973565);
                 var end = new google.maps.LatLng(45.776848, 15.979564);
-                waypts.push({location:new google.maps.LatLng(45.778771, 15.980921), stopover:true});
+                waypts.push({ location: new google.maps.LatLng(45.778771, 15.980921), stopover: true });
                 break;              
                 }
                 var request = {
@@ -194,7 +208,7 @@
 
                     travelMode: google.maps.TravelMode[selectedMode]
                 };
-                directionsService.route(request, function(response, status) {
+        directionsService.route(request, function (response, status) {
                     if (status == google.maps.DirectionsStatus.OK) {
                         directionsDisplay.setDirections(response);
                     }
@@ -204,7 +218,7 @@
     }
 
     // Add a marker to the map and push to the array.
-    function addMarker(location,desc) {
+    function addMarker(location, desc) {
         var marker = new google.maps.Marker({
             position: location,
             map: map
@@ -234,15 +248,12 @@
         <div id="map-canvas"></div>
     </div>
     <div class="col-xs-8 col-sm-6 col-md-2">
-        <div id="travel_selector">
-            <p>
-                <strong>Način razgledavanja: </strong>
-                <select id="travelType" onchange="calcRoute(0);">
-                    <option value="WALKING">Pješice</option>
-                    <option value="DRIVING">Automobilom</option>
-                </select>
-            </p>
-        </div>
+        Level 3: .col-xs-8 .col-sm-6
+            <script type="text/javascript">
+                function UpdateLabel() {
+                    document.getElementById("infoLabel").innerText = "kliknuo si gumb, bravo";
+                }
+            </script>
     </div>
 </div>
 

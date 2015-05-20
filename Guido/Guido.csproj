@@ -195,6 +195,8 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MakeRouteController.cs" />
     <Compile Include="Controllers\PlacesController.cs" />
+    <Compile Include="Controllers\RoutesController.cs" />
+    <Compile Include="Controllers\TypeOfPlacesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -273,16 +275,6 @@
     <Content Include="Views\Places\Details.cshtml" />
     <Content Include="Views\Places\Edit.cshtml" />
     <Content Include="Views\Places\Index.cshtml" />
-    <Content Include="Views\MakeRoute\Create.cshtml" />
-    <Content Include="Views\MakeRoute\Delete.cshtml" />
-    <Content Include="Views\MakeRoute\Details.cshtml" />
-    <Content Include="Views\MakeRoute\Edit.cshtml" />
-    <Content Include="Views\MakeRoute\Index.cshtml" />
-    <Content Include="Views\RoutePoints\Create.cshtml" />
-    <Content Include="Views\RoutePoints\Delete.cshtml" />
-    <Content Include="Views\RoutePoints\Details.cshtml" />
-    <Content Include="Views\RoutePoints\Edit.cshtml" />
-    <Content Include="Views\RoutePoints\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -37,24 +37,44 @@ namespace Guido.Controllers
             return View();
         }
 
-        public ActionResult GetRoute(string rt)
+        //Za racunanje ruta
+        [HttpGet]
+        public ActionResult GetRoute()
         {
-            int myRt = Convert.ToInt32(rt);
-            double povratni = 0;
+            var routePoints = new
+            {
+                RouteId = new LinkedList<int>(),
+                Position = new LinkedList<int>(),
+                Longitude = new LinkedList<double>(),
+                Latitude = new LinkedList<double>(),
+                Name = new LinkedList<string>(),
+                Address = new LinkedList<string>(),
+                Description = new LinkedList<string>()
+            };
             var routes =
                 from o in db.RoutePoint
-                where o.IdRoute == myRt
                 select new
                 {
-                    longitude = o.Place.longitude,
-                    latitude = o.Place.latitude
+                    idR = o.IdRoute,
+                    pos = (int)o.PositionInRoute,
+                    lng = o.Place.longitude,
+                    lat = o.Place.latitude,
+                    nm = o.Place.name,
+                    adr = o.Place.adress,
+                    dsc = o.Place.dscrb
                 };
-            foreach (var koord in routes)
+            foreach (var n in routes)
             {
-                
-                povratni = koord.longitude;
+                routePoints.RouteId.AddLast(n.idR);
+                routePoints.Position.AddLast(n.pos);
+                routePoints.Longitude.AddLast(n.lng);
+                routePoints.Latitude.AddLast(n.lat);
+                routePoints.Name.AddLast(n.nm);
+                routePoints.Address.AddLast(n.adr);
+                routePoints.Description.AddLast(n.dsc);
+
             }
-            return Content(povratni.ToString());
+            return Json(routes, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetJSONData()
