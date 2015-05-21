@@ -76,7 +76,7 @@ namespace Guido.Controllers
                 routePoints.Description.AddLast(n.dsc);
 
             }
-            return Json(routes, JsonRequestBehavior.AllowGet);
+            return Json(routePoints, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetJSONData()
