@@ -1,0 +1,26 @@
+﻿@model Baza.TypeOfPlace
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TypeOfPlace</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NameTypeOfPlace)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NameTypeOfPlace)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.IdTypeOfPlace }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

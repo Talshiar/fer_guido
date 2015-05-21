@@ -157,3 +157,9 @@ $RECYCLE.BIN/
 /packages
 Baza/Web.config
 Guido/Views/Web.config
+*.config
+Guido/Views/Web.config
+*.config
+*.config
+*.config
+*.config

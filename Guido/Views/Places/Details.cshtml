@@ -4,14 +4,14 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h2>Detalji</h2>
 
 <div>
-    <h4>Place</h4>
+    <h4>@Html.DisplayFor(model => model.name)</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.longitude)
+            Geografska dužina:
         </dt>
 
         <dd>
@@ -19,7 +19,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.latitude)
+            Geografska širina:
         </dt>
 
         <dd>
@@ -27,15 +27,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.typeOfPlace)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.typeOfPlace)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.dscrb)
+            Opis:
         </dt>
 
         <dd>
@@ -43,24 +35,24 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.picture)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.picture)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.City.cityName)
+            Grad:
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.City.cityName)
         </dd>
 
+        <dt>
+            Adresa:
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.adress)
+        </dd>
+
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.ID })*@ |
+    @Html.ActionLink("Odi na popis mjesta", "Index")
 </p>
