@@ -17,11 +17,8 @@ namespace Guido.Controllers
         // GET: TypeOfPlaces
         public ActionResult Index()
         {
-            //var city = db.City.Include(c => c.State);
-            //return View(city.ToList());
-            var type = db.TypeOfPlace.Include(c => c.IdTypeOfPlace);
-            return View(type.ToList());
-            //return View(db.TypeOfPlace.ToList());
+            
+            return View(db.TypeOfPlace.ToList());
         }
 
         // GET: TypeOfPlaces/Details/5
