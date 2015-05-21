@@ -4,7 +4,7 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h2>Detalji</h2>
 
 <div>
     <h4>@Html.DisplayFor(model => model.name)</h4>
@@ -27,27 +27,11 @@
         </dd>
 
         <dt>
-            Tip mjesta:
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.typeOfPlace)
-        </dd>
-
-        <dt>
             Opis:
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.dscrb)
-        </dd>
-
-        <dt>
-            Slika:
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.picture)
         </dd>
 
         <dt>
@@ -58,9 +42,17 @@
             @Html.DisplayFor(model => model.City.cityName)
         </dd>
 
+        <dt>
+            Adresa:
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.adress)
+        </dd>
+
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.ID })*@ |
+    @Html.ActionLink("Odi na popis mjesta", "Index")
 </p>
