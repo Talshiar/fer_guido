@@ -51,7 +51,8 @@ namespace Guido.Controllers
                 Latitude = new LinkedList<double>(),
                 Name = new LinkedList<string>(),
                 Address = new LinkedList<string>(),
-                Description = new LinkedList<string>()
+                Description = new LinkedList<string>(),
+                PlaceId = new LinkedList<int>()
             };
             var routes =
                 from o in db.RoutePoint
@@ -63,7 +64,8 @@ namespace Guido.Controllers
                     lat = o.Place.latitude,
                     nm = o.Place.name,
                     adr = o.Place.adress,
-                    dsc = o.Place.dscrb
+                    dsc = o.Place.dscrb,
+                    idP = o.Place.ID
                 };
             foreach (var n in routes)
             {
@@ -74,6 +76,7 @@ namespace Guido.Controllers
                 routePoints.Name.AddLast(n.nm);
                 routePoints.Address.AddLast(n.adr);
                 routePoints.Description.AddLast(n.dsc);
+                routePoints.PlaceId.AddLast(n.idP);
 
             }
             return Json(routePoints, JsonRequestBehavior.AllowGet);
