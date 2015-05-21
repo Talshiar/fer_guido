@@ -231,8 +231,7 @@
                         map: map
                     });
                     var summaryPanel = document.getElementById('directions_panel');
-
-
+                
                     MapMarker.push(marker);
                     summaryPanel.innerHTML = '';
                     //Show me the info
@@ -247,26 +246,30 @@
                             break;
                         case (-2):
                             var Desc = '<h3>Trg bana Josipa Jelačića</h3>' +
-                                '<p>Adresa: Trg bana Josipa Jelačića </p>' + '<p>' + desc + '</p>'
+                                '<p>Adresa: Trg bana Josipa Jelačića </p>'
                             //summaryPanel.innerHTML = '';
                             summaryPanel.innerHTML = '<strong>Detalji lokacije:</strong>';
+                            summaryPanel.innerHTML += '<br><br>Ime lokacije: Trg bana Josipa Jelačića <br>Adresa: Trg bana Josipa Jelačića';
                             var infowindow = new google.maps.InfoWindow({
                                 content: Desc
                             });
+                            summaryPanel.innerHTML += '<br><a href="/Places/Details/'+ 1 +'" target = "_blank">Opširnije</a><hr>';
+
                             break;
                          default:
                             //summaryPanel.innerHTML = '';
                             summaryPanel.innerHTML += '<strong>Detalji lokacije:</strong>';
-                            summaryPanel.innerHTML += '<br><br>Adresa: ' + markers.nameM[ID] + '<br>Adresa: ' + markers.addressM[ID];
-                            summaryPanel.innerHTML += '<br><a href="#" onclick="desc">Opširnije</a><hr>';
+                            summaryPanel.innerHTML += '<br><br>Ime lokacije: ' + markers.nameM[ID] + '<br>Adresa: ' + markers.addressM[ID];
                             var Desc = '<h3>' + markers.nameM[ID] + '</h3>' +
-                                '<p>Adresa: ' + markers.addressM[ID] + '</p>' + '<p>' + desc + '</p>'
+                                '<p>Adresa: ' + markers.addressM[ID] + '</p>'
                             var infowindow = new google.maps.InfoWindow({
                                 content: Desc
                             });
+                            var temp = ID+1
+                            summaryPanel.innerHTML += '<br><a href="/Places/Details/'+ temp +'" target = "_blank">Opširnije</a><hr>';
+
                             break;
                     }
-
                     google.maps.event.addListener(marker, 'click', function () {
                         infowindow.open(map, marker);
                         if (marker.getAnimation() != null) {
