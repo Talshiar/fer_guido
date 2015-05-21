@@ -96,7 +96,6 @@
                 var stepDisplay;
                 var PointMarkers = [];
             var opis = [];
-            var poc = 0, kraj = 0, br = 0, wp = 0;
                 var MapMarker = [];
 
 
@@ -149,12 +148,9 @@
                         window.zadnjaRuta = ruta;
                     }
                     var waypts = [];
-                //var i = 0;
                     var selectedMode = document.getElementById('travelType').value;
                     var summaryPanel = document.getElementById('directions_panel');
-                //window.opis = [];
                     summaryPanel.innerHTML = '';
-                br = 0;
                 var i = 0;
                     $.getJSON('/Home/GetRoute', function (result) {
                         summaryPanel.innerHTML += '<strong>Detalji rute:</strong>';
@@ -162,26 +158,16 @@
                             if (result.RouteId[i] == zadnjaRuta) {
                                 if (result.Position[i] == 1) {
                                     var start = new google.maps.LatLng(result.Longitude[i], result.Latitude[i]);
-                                opis[br] = result.Description[i];
-                                poc = br;
-                                br++;
-                                
                                     summaryPanel.innerHTML += '<br><br>Polazište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
                                     summaryPanel.innerHTML += '<br><a href="/Places/Details/'+ result.PlaceId[i] +'" target = "_blank">Opširnije</a><hr>';
                                 }
                                 else if (result.Position[i] == 0) {
                                     var end = new google.maps.LatLng(result.Longitude[i], result.Latitude[i]);
-                                opis[br] = result.Description[i];
-                                kraj = br;
-                                br++;
                                 summaryPanel.innerHTML += '<br>Odredište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
                                 summaryPanel.innerHTML += '<br><a href="/Places/Details/' + result.PlaceId[i] + '" target = "_blank">Opširnije</a><hr>';
                                 }
                                 else {
                                     waypts.push({ location: new google.maps.LatLng(result.Longitude[i], result.Latitude[i]), stopover: true });
-                                opis[br] = result.Description[i];
-                                wp = br;
-                                br++;
                                 summaryPanel.innerHTML += '<br>Sljedeća lokacija: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
                                 summaryPanel.innerHTML += '<br><a href="/Places/Details/' + result.PlaceId[i] + '" target = "_blank">Opširnije</a><hr>';
 
@@ -245,11 +231,6 @@
                         }
                     });
                 }
-            //Description tocaka u ruti
-            function Description(desc) {
-                if (desc != null) alert("Detaljnije o mjestu: " + desc);
-                else alert("Nema detaljnijih informacija.");
-            }
 
                 function clearOverlays() {
                     for (var i = 0; i < MapMarker.length; i++) {
