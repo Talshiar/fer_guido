@@ -24,46 +24,44 @@
     </div>
 </div>
 <div class="container">
-    <div class="col-xs-8 col-sm-6 col-md-2">
+    <div class="col-xs-8 col-sm-6 col-md-4">
+        <style css>
+            label {
+                cursor: pointer;
+            }
+        </style>
         <div class="well well-sm">
 
             <div>
                 <ul class="nav">
                     <li>
-                        <label label-default="" class="tree-toggle nav-header">Postojeće rute</label>
+                        <label class="tree-toggle nav-header">Postojeće rute</label>
                         <ul class="nav tree">
-                            <li>
-
-                                <a onclick="calcRoute(1);" id="route1" href="#">Brzi obilazak centra</a>
-                            </li>
-                            <li>
-                                <a onclick="calcRoute(2);" id="route2" href="#">Detaljan obilazak centra</a>
-                            </li>
+                            @foreach (var route in Model.Route)
+                            {
+                                <li><a href="#" id="@route.ID" onclick="calcRoute(@route.ID)">@Html.DisplayFor(modelItem => route.typOfRoute)</a></li>
+                            }
                         </ul>
                     </li>
                     <li>
-                        <label label-default="" class="tree-toggle nav-header">Znamenitosti</label>
+                        <hr>
+                        <label class="tree-toggle nav-header">Znamenitosti</label>
                         <ul class="nav tree">
                             <li>
-                                <label label-default="" class="tree-toggle nav-header">Povijesne</label>
-                                <ul class="nav tree">
-                                    <li>
-                                        <a href="#">Kula Lotršćak</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Hrvatsko narodno kazalište</a>
-                                    </li>
-                                </ul>
-                            <li>
-                                <label label-default="" class="tree-toggle nav-header">Moderne</label>
-                                <ul class="nav tree">
-                                    <li>
-                                        <a href="#">MSU</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Bandićeve fontane</a>
-                                    </li>
-                                </ul>
+                                @foreach (var typeOfPlace in Model.TypeOfPlace)
+                                {
+
+                                    <label class="tree-toggle nav-header">@Html.DisplayFor(modelItem => typeOfPlace.NameTypeOfPlace) </label>
+                                    <ul class="nav tree">
+                                        @foreach (var place in Model.Place)
+                                        {
+                                            if (place.typeOfPlace == typeOfPlace.IdTypeOfPlace)
+                                            {
+                                                <li><a href="#" id="@place.ID" onclick="addMarkerLocation(@place.ID)">@Html.DisplayFor(modelItem => place.name)</a></li>
+                                            }
+                                        }
+                                    </ul>
+                                }
                             </li>
                         </ul>
                     </li>
@@ -71,10 +69,14 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-xs-8 col-sm-6 col-md-4" style="border-left:1px solid #E6E6E6">
         <style type="text/css">
             #map-canvas {
                 height: 500px;
+            }
+
+            #go-button {
+                position: absolute;
             }
         </style>
 
@@ -82,150 +84,211 @@
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCp3aNN7IXH_AmU59UH2g1s5QC4N2e7r6o&sensor=true"></script>
 
         <script type="text/javascript">
-    var map;
-    var markers = [];
-    var Placemodel;
-    var opis;
-    window.directionsDisplay = new google.maps.DirectionsRenderer();
-    window.directionsService = new google.maps.DirectionsService();
-    var stepDisplay;
-    var PointMarkers = [];
 
-    function initialize() {
-        var mapCenter = new google.maps.LatLng(45.813209, 15.977283);
-        var mapOptions = {
-            zoom: 13,
-            center: mapCenter,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        }
+            var map;
+            var markers = {
+                'nameM': [],
+                'descriptionM': [],
+                'latM': [],
+                'lngM': [],
+                'addressM': [],
+                'typePlaceM': []
+            };
+            window.directionsDisplay = new google.maps.DirectionsRenderer();
+            window.directionsService = new google.maps.DirectionsService();
+            var stepDisplay;
+            var PointMarkers = [];
+            var MapMarker = [];
 
-        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-        directionsDisplay.setMap(map);
-
-        // This event listener will call addMarker() when the map is clicked.
-        google.maps.event.addListener(map, 'click', function (event) {
-            addMarker(event.latLng);
-        });
-
-        // Adds a marker at the center of the map.
-        addMarker(mapCenter);
-
-        // Sets the map on all markers in the array.
-        function setAllMap(map) {
-            for (var i = 0; i < markers.length; i++) {
-                markers[i].setMap(map);
-            }
-        }
-    }
-    //ajmo racunati rute
-    function calcRoute(ruta) {
-        if (ruta == 0)
-        {
-            ruta = zadnjaRuta;
-            } else {
-            window.zadnjaRuta = ruta;
-        }
-        var waypts = [];
-                var selectedMode = document.getElementById('travelType').value;
-        switch(zadnjaRuta) {
-            case 1:
-                //PointMarkers = @Html.Action("GetRoute", "Home", new { rt = 1 });
-                var start = new google.maps.LatLng(45.81324, 15.976808);
-                var end = new google.maps.LatLng(45.801028, 15.969941);
-                waypts.push({location:new google.maps.LatLng(45.816272, 15.973565), stopover:true});
-                waypts.push({location:new google.maps.LatLng(45.814553, 15.979264), stopover:true});
-                break;
-            case 2:
-                //PointMarkers = @Html.Action("GetRoute", "Home", new { rt = 2 });
-                var start = new google.maps.LatLng(45.816272, 15.973565);
-                var end = new google.maps.LatLng(45.776848, 15.979564);
-                waypts.push({location:new google.maps.LatLng(45.778771, 15.980921), stopover:true});
-                break;              
+            //ovdje se u data vadi iz baze Place podaci
+            var url = '/Home/GetJSONData';
+            $.post(url, null, function (dataPlace) {
+                var i = 0;
+                // Iterate through the JSON array
+                while (dataPlace.Name[i] != null) {
+                    //alert(dataPlace.Name[i] + i);
+                    //var lokacija = new google.maps.LatLng(dataPlace.Latitude[i], dataPlace.Longitude[i]);
+                    markers.nameM[i] = dataPlace.Name[i];
+                    markers.descriptionM[i] = dataPlace.Description[i];
+                    markers.addressM[i] = dataPlace.Address[i];
+                    markers.lngM[i] = dataPlace.Longitude[i];
+                    markers.latM[i] = dataPlace.Latitude[i];
+                    markers.typePlaceM[i] = dataPlace.PlaceType[i];
+                    //alert(markers.nameM[i] + '::::' + markers.descriptionM[i] + '::::' + markers.addressM[i] + '::::' + markers.locationM[i] + '::::' + markers.typePlaceM[i]);
+                    i++;
                 }
-                var request = {
-                    origin: start,
-                    destination: end,
-                    waypoints: waypts,
-                    optimizeWaypoints: true,
+            });
 
-                    travelMode: google.maps.TravelMode[selectedMode]
-                };
-                directionsService.route(request, function(response, status) {
-                    if (status == google.maps.DirectionsStatus.OK) {
-                        directionsDisplay.setDirections(response);
+            function initialize() {
+                var mapCenter = new google.maps.LatLng(45.813209, 15.977283);
+                var mapOptions = {
+                    zoom: 13,
+                    center: mapCenter,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                }
+
+                map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+                directionsDisplay.setMap(map);
+
+                // This event listener will call addMarker() when the map is clicked.
+                google.maps.event.addListener(map, 'click', function (event) {
+                    addMarker(event.latLng, "Odabrana lokacija");
+                });
+
+                // Adds a marker at the center of the map.
+                addMarker(mapCenter, "Glavni trg Josipa bana Jelačića");
+
+                // Sets the map on all markers in the array.
+
+            }
+            //ajmo racunati rute
+            function calcRoute(ruta) {
+                if (ruta == 0) {
+                    ruta = zadnjaRuta;
+                } else {
+                    window.zadnjaRuta = ruta;
+                }
+                var waypts = [];
+                var i = 0;
+                window.br = 0;
+                var selectedMode = document.getElementById('travelType').value;
+                var summaryPanel = document.getElementById('directions_panel');
+                window.opis = [];
+                summaryPanel.innerHTML = '';
+                $.getJSON('/Home/GetRoute', function (result) {
+                    summaryPanel.innerHTML += '<strong>Detalji rute:</strong>';
+                    while (result.Name[i] != null) {
+                        if (result.RouteId[i] == zadnjaRuta) {
+                            if (result.Position[i] == 1) {
+                                var start = new google.maps.LatLng(result.Longitude[i], result.Latitude[i]);
+                                opis[br] = result.Description[i];
+
+                                br++;
+                                summaryPanel.innerHTML += '<br><br>Polazište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
+                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis[br])">Opširnije</a><hr>';
+                            }
+                            else if (result.Position[i] == 0) {
+                                var end = new google.maps.LatLng(result.Longitude[i], result.Latitude[i]);
+                                opis[br] = result.Description[i];
+                                br++;
+                                summaryPanel.innerHTML += '<br>Odredište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
+                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis[br]);">Opširnije</a><hr>';
+                            }
+                            else {
+                                waypts.push({ location: new google.maps.LatLng(result.Longitude[i], result.Latitude[i]), stopover: true });
+                                opis[br] = result.Description[i];
+                                br++;
+                                summaryPanel.innerHTML += '<br>Sljedeća lokacija: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
+                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis[br]);">Opširnije</a><hr>';
+
+                            }
+                        }
+                        i++;
+                    }
+                    var request = {
+                        origin: start,
+                        destination: end,
+                        waypoints: waypts,
+                        optimizeWaypoints: true,
+
+                        travelMode: google.maps.TravelMode[selectedMode]
+                    };
+                    directionsService.route(request, function (response, status) {
+                        if (status == google.maps.DirectionsStatus.OK) {
+                            directionsDisplay.setDirections(response);
+
+                        }
+                    });
+
+                });
+            }
+
+            //Add a marker from the list of locations
+            function addMarkerLocation(IDplace) {
+                //alert(markers.nameM[IDplace-1]);
+
+                var i = IDplace - 1;
+
+                //alert(IDplace);
+
+                var lokacija = new google.maps.LatLng(markers.lngM[i], markers.latM[i]);
+                addMarker(lokacija, markers.descriptionM[i]);
+                i++;
+            }
+
+            // Add a marker to the map and push to the array.
+            function addMarker(location, desc) {
+
+                clearOverlays()
+                //alert(location + desc);
+                var marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: desc
+                });
+                MapMarker.push(marker);
+                google.maps.event.addListener(marker, 'click', function () {
+                    infowindow.open(map, marker);
+                    if (marker.getAnimation() != null) {
+                        marker.setAnimation(null);
+                    } else {
+                        marker.setAnimation(google.maps.Animation.BOUNCE);
                     }
                 });
-        //alert(PointMarkers);
-
-    }
-
-    // Add a marker to the map and push to the array.
-    function addMarker(location) {
-        var marker = new google.maps.Marker({
-            position: location,
-            map: map
-        });
-        markers.push(marker);
-        var infowindow = new google.maps.InfoWindow({
-            content: "zaštoooo"
-        });
-
-        google.maps.event.addListener(marker, 'click', function () {
-            infowindow.open(map, marker);
-            if (marker.getAnimation() != null) {
-                marker.setAnimation(null);
-            } else {
-                marker.setAnimation(google.maps.Animation.BOUNCE);
             }
-        });
-    }
+
+            function clearOverlays() {
+                for (var i = 0; i < MapMarker.length; i++) {
+                    MapMarker[i].setMap(null);
+                }
+            }
+            google.maps.event.addDomListener(window, 'load', initialize);
 
 
-
-    // Removes the markers from the map, but keeps them in the array.
-    function clearMarkers() {
-        setAllMap(null);
-    }
-
-    // Shows any markers currently in the array.
-    function showMarkers() {
-        setAllMap(map);
-    }
-
-    // Deletes all markers in the array by removing references to them.
-    function deleteMarkers() {
-        clearMarkers();
-        markers = [];
-    }
-
-    google.maps.event.addDomListener(window, 'load', initialize);
-
+            //Description tocaka u ruti
+            function Description(desc) {
+                if (desc != null) alert("Detaljnije o mjestu: " + desc);
+                else alert("Nema detaljnijih informacija.");
+            }
         </script>
         <div id="panel">
-            <input onclick="clearMarkers();" type=button value="Hide Markers">
-            <input onclick="showMarkers();" type=button value="Show All Markers">
-            <input onclick="deleteMarkers();" type=button value="Delete Markers">
+
         </div>
         <div id="map-canvas"></div>
+        <hr>
+        <div class="row">
+            <div class="col-md-offset-4">
+                <button type="button" class="btn btn-primary" id="go-button" style="width: 180px; height: 40px; background-color: #005A31;  border:1px solid #000; font-size:110%">@Html.ActionLink("Kreiraj svoju rutu!", "Index", "Places", null, new { @class = "go-button" })</button>
+
+            </div>
+        </div>
     </div>
-    <div class="col-xs-8 col-sm-6 col-md-2">
+
+    <div class="col-xs-8 col-sm-6 col-md-4" style="border-left:1px solid #E6E6E6;height:500px">
         <div id="travel_selector">
             <p>
                 <strong>Način razgledavanja: </strong>
-                <select id="travelType" onchange="calcRoute(0);">
+                <select class="form-control" id="travelType" onchange="calcRoute(0);">
                     <option value="WALKING">Pješice</option>
                     <option value="DRIVING">Automobilom</option>
                 </select>
             </p>
         </div>
+        <div id="directions_panel" style="margin:20px;"></div>
+
+        <script type="text/javascript">
+            function UpdateLabel() {
+                document.getElementById("infoLabel").innerText = "kliknuo si gumb, bravo";
+            }
+        </script>
     </div>
+
 </div>
 
-<div class="row">
-    <div class="col-sm-9">
-        <button type="button" class="btn btn-primary btn-lg btn-block">GO!</button>
-    </div>
-</div>
+
 
 
 
