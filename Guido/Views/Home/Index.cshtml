@@ -20,6 +20,8 @@
 
                 }
             </select>
+            <a href="/Places/Details/1" target="_blank">Pogle kipa</a>
+            @Html.ActionLink("kiiiiip", "Details", "Places", new { id = 1 }, new { target = "_blank" })
         </div>
     </div>
 </div>
@@ -161,22 +163,23 @@
                                 opis[br] = result.Description[i];
 
                                 br++;
+                                
                                     summaryPanel.innerHTML += '<br><br>Polazište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
-                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis[br])">Opširnije</a><hr>';
+                                    summaryPanel.innerHTML += '<br><a href="/Places/Details/'+ result.PlaceId[i] +'" target = "_blank">Opširnije</a><hr>';
                                 }
                                 else if (result.Position[i] == 0) {
                                     var end = new google.maps.LatLng(result.Longitude[i], result.Latitude[i]);
                                 opis[br] = result.Description[i];
                                 br++;
                                 summaryPanel.innerHTML += '<br>Odredište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
-                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis[br]);">Opširnije</a><hr>';
+                                summaryPanel.innerHTML += '<br><a href="/Places/Details/' + result.PlaceId[i] + '" target = "_blank">Opširnije</a><hr>';
                                 }
                                 else {
                                     waypts.push({ location: new google.maps.LatLng(result.Longitude[i], result.Latitude[i]), stopover: true });
                                 opis[br] = result.Description[i];
                                 br++;
                                 summaryPanel.innerHTML += '<br>Sljedeća lokacija: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
-                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis[br]);">Opširnije</a><hr>';
+                                summaryPanel.innerHTML += '<br><a href="/Places/Details/' + result.PlaceId[i] + '" target = "_blank">Opširnije</a><hr>';
 
                                 }
                             }
