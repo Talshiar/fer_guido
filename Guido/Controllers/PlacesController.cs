@@ -6,7 +6,9 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using GoogleMapsApi.StaticMaps;
 using Baza;
+using System.Data.SqlClient;
 
 namespace Guido.Controllers
 {
@@ -37,96 +39,44 @@ namespace Guido.Controllers
         }
 
         // GET: Places/Create
-        public ActionResult Create()
+        [HttpGet]
+        public ActionResult CreateRoute(int? id)
         {
-            ViewBag.fk_City = new SelectList(db.City, "ID", "cityName");
-            return View();
-        }
-
-        // POST: Places/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,fk_City,longitude,latitude,typeOfPlace,dscrb,picture")] Place place)
-        {
-            if (ModelState.IsValid)
+            if(id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            var newRoute = new
             {
-                db.Place.Add(place);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                PlaceId = new LinkedList<int>(),
+                PlaceType = new LinkedList<int>(),
+                Longitude = new LinkedList<double>(),
+                Latitude = new LinkedList<double>(),
+                Name = new LinkedList<string>(),
+                Address = new LinkedList<string>(),
+                Description = new LinkedList<string>()
+            };
+
+            var places = from p in db.Place
+                         select new
+                         {
+                             idP = p.ID,
+                             pType = p.typeOfPlace,
+                             descrb = p.dscrb,
+                             lng = p.longitude,
+                             lat = p.latitude,
+                             pName = p.name,
+                             pAdr = p.adress
+                         };
+            foreach (var item in places)
+            {
+                newRoute.PlaceId.AddLast(item.idP);
+                newRoute.PlaceType.AddLast(item.pType);
+                newRoute.Description.AddLast(item.descrb);
+                newRoute.Longitude.AddLast(item.lng);
+                newRoute.Latitude.AddLast(item.lat);
+                newRoute.Name.AddLast(item.pName);
+                newRoute.Address.AddLast(item.pAdr);
             }
 
-            ViewBag.fk_City = new SelectList(db.City, "ID", "cityName", place.fk_City);
-            return View(place);
-        }
-
-        // GET: Places/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Place place = db.Place.Find(id);
-            if (place == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.fk_City = new SelectList(db.City, "ID", "cityName", place.fk_City);
-            return View(place);
-        }
-
-        // POST: Places/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,fk_City,longitude,latitude,typeOfPlace,dscrb,picture")] Place place)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(place).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.fk_City = new SelectList(db.City, "ID", "cityName", place.fk_City);
-            return View(place);
-        }
-
-        // GET: Places/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Place place = db.Place.Find(id);
-            if (place == null)
-            {
-                return HttpNotFound();
-            }
-            return View(place);
-        }
-
-        // POST: Places/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Place place = db.Place.Find(id);
-            db.Place.Remove(place);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            return Json(newRoute, JsonRequestBehavior.AllowGet);
         }
     }
 }
