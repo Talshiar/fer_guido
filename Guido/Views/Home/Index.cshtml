@@ -25,6 +25,9 @@
 </div>
 <div class="container">
     <div class="col-xs-8 col-sm-6 col-md-2">
+        <style css>
+            label {cursor: pointer}
+        </style>
         <div class="well well-sm">
 
             <div>
@@ -38,7 +41,7 @@
                             }
                         </ul>
                     </li>
-                    <li>
+                    <li><hr>
                         <label class="tree-toggle nav-header">Znamenitosti</label>
                         <ul class="nav tree">
                             <li>
@@ -58,48 +61,19 @@
                                 }
                         </li>
                     </ul>
-                        @*<div class="container">       
-                            <label label-default="" class="tree-toggle nav-header">Responsive</label>
-                            <ul class="nav tree">
-                              <li>
-                                <label label-default="" class="tree-toggle nav-header">Media Queries</label>
-                                <ul class="nav tree">
-                                  <li><a href="#">Text</a>
                                   </li>
-                                  <li><a href="#">Images</a>
-                                  </li>
-                                  <li>
-                                    <label label-default="" class="tree-toggle nav-header">Mobile</label>
-                                    <ul class="nav tree">
-                                      <li><a href="#">iPhone</a>
-                                      </li>
-                                      <li><a href="#">Samsung</a>
-                                      </li>
                                     </ul>
-                                  </li>
-                                </ul>
-                              </li>
-                            </ul>
-                          </li>
-                      </ul>
                   </div>
               </div>
           </div>
-      </div>
-    </div>*@
-                    </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
+    <div class="col-md-6" style="border-left:1px solid #E6E6E6;height:500px">
             <style type="text/css">
                 #map-canvas {
                     height: 500px;
                 }
+
                 #go-button {
                     position: absolute;
-                    
                 }
             </style>
 
@@ -173,9 +147,10 @@
                     }
                     var waypts = [];
                     var i = 0;
+                window.br = 0;
                     var selectedMode = document.getElementById('travelType').value;
                     var summaryPanel = document.getElementById('directions_panel');
-                    window.opis = '';
+                window.opis = [];
                     summaryPanel.innerHTML = '';
                     $.getJSON('/Home/GetRoute', function (result) {
                         summaryPanel.innerHTML += '<strong>Detalji rute:</strong>';
@@ -183,19 +158,25 @@
                             if (result.RouteId[i] == zadnjaRuta) {
                                 if (result.Position[i] == 1) {
                                     var start = new google.maps.LatLng(result.Longitude[i], result.Latitude[i]);
-                                    opis = result.Description[i];
+                                opis[br] = result.Description[i];
+
+                                br++;
                                     summaryPanel.innerHTML += '<br><br>Polazište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
-                                    summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis)">Opširnije</a>';
+                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis[br])">Opširnije</a><hr>';
                                 }
                                 else if (result.Position[i] == 0) {
                                     var end = new google.maps.LatLng(result.Longitude[i], result.Latitude[i]);
-                                    summaryPanel.innerHTML += '<br><br>Odredište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
-                                    summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis);">Opširnije</a>';
+                                opis[br] = result.Description[i];
+                                br++;
+                                summaryPanel.innerHTML += '<br>Odredište: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
+                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis[br]);">Opširnije</a><hr>';
                                 }
                                 else {
                                     waypts.push({ location: new google.maps.LatLng(result.Longitude[i], result.Latitude[i]), stopover: true });
-                                    summaryPanel.innerHTML += '<br><br>Sljedeća lokacija: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
-                                    summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis);">Opširnije</a>';
+                                opis[br] = result.Description[i];
+                                br++;
+                                summaryPanel.innerHTML += '<br>Sljedeća lokacija: ' + result.Name[i] + '<br>Adresa: ' + result.Address[i];
+                                summaryPanel.innerHTML += '<br><a href="#" onclick="Description(opis[br]);">Opširnije</a><hr>';
 
                                 }
                             }
@@ -225,7 +206,7 @@
                     var i = IDplace - 1;
 
                             //alert(IDplace);
-                            
+
                             var lokacija = new google.maps.LatLng(markers.lngM[i], markers.latM[i]);
                             addMarker(lokacija, markers.descriptionM[i]);
                             i++;
@@ -276,13 +257,15 @@
 
             </div>
             <div id="map-canvas"></div>
+        <hr>
             <div class="row">
                 <div class="col-md-offset-4">
                     <button type="button" class="btn btn-primary" id="go-button" style="width: 180px; height: 40px; background-color: #005A31;  border:1px solid #000; font-size:110%" onclick="self.open('http://localhost:55152/MakeRoute')">Kreiraj svoju rutu!</button>
                 </div>
             </div>
         </div>
-        <div class="col-xs-8 col-sm-6 col-md-3">
+
+    <div class="col-xs-8 col-sm-6 col-md-3" style="border-left:1px solid #E6E6E6;height:500px">
             <div id="travel_selector">
                 <p>
                     <strong>Način razgledavanja: </strong>
@@ -300,6 +283,7 @@
                 }
             </script>
         </div>
+
     </div>
 
 
