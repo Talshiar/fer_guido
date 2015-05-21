@@ -54,7 +54,7 @@
                                         {
                                             if (place.typeOfPlace == typeOfPlace.IdTypeOfPlace)
                                             {
-                                                <li><a href="#">@Html.DisplayFor(modelItem => place.name)</a></li>
+                                                <li><a href="#" id="@place.ID" onclick="addMarkerLocation(@place.ID)">@Html.DisplayFor(modelItem => place.name)</a></li>
                                             }
                                         }
                                     </ul>
@@ -86,7 +86,8 @@
             var markers = {
                 'nameM': [],
                 'descriptionM': [],
-                'locationM': [],
+                    'latM': [],
+                    'lngM': [],
                 'addressM': [],
                 'typePlaceM': []
             };
@@ -96,6 +97,7 @@
             var PointMarkers = [];
             var opis = [];
             var poc = 0, kraj = 0, br = 0, wp = 0;
+                var MapMarker = [];
 
 
             //ovdje se u data vadi iz baze Place podaci
@@ -104,12 +106,13 @@
                 var i = 0;
                 // Iterate through the JSON array
                 while (dataPlace.Name[i] != null) {
-                    //alert(dataPlace.Name[i]);
-                    var lokacija = new google.maps.LatLng(dataPlace.Latitude[i], dataPlace.Longitude[i]);
+                        //alert(dataPlace.Name[i] + i);
+                        //var lokacija = new google.maps.LatLng(dataPlace.Latitude[i], dataPlace.Longitude[i]);
                     markers.nameM[i] = dataPlace.Name[i];
                     markers.descriptionM[i] = dataPlace.Description[i];
                     markers.addressM[i] = dataPlace.Address[i];
-                    markers.locationM[i] = lokacija;
+                        markers.lngM[i] = dataPlace.Longitude[i];
+                        markers.latM[i] = dataPlace.Latitude[i];
                     markers.typePlaceM[i] = dataPlace.PlaceType[i];
                     //alert(markers.nameM[i] + '::::' + markers.descriptionM[i] + '::::' + markers.addressM[i] + '::::' + markers.locationM[i] + '::::' + markers.typePlaceM[i]);
                     i++;
@@ -202,18 +205,36 @@
 
                 });
             }
+                //Add a marker from the list of locations
+                function addMarkerLocation(IDplace) {
+                    //alert(markers.nameM[IDplace-1]);
+                    
+                    var i = IDplace - 1;
 
+                            //alert(IDplace);
+
+                            var lokacija = new google.maps.LatLng(markers.lngM[i], markers.latM[i]);
+                            addMarker(lokacija, markers.descriptionM[i]);
+                            i++;
+                            
+                        
+                    
+
+                }
             // Add a marker to the map and push to the array.
             function addMarker(location, desc) {
+
+                    clearOverlays()
+                    //alert(location + desc);
                 var marker = new google.maps.Marker({
                     position: location,
                     map: map
                 });
-                //markers.push(marker);
+                    
                 var infowindow = new google.maps.InfoWindow({
                     content: desc
                 });
-
+                    MapMarker.push(marker);
                 google.maps.event.addListener(marker, 'click', function () {
                     infowindow.open(map, marker);
                     if (marker.getAnimation() != null) {
@@ -229,8 +250,11 @@
                 else alert("Nema detaljnijih informacija.");
             }
 
-
-
+                function clearOverlays() {
+                    for (var i = 0; i < MapMarker.length; i++) {
+                        MapMarker[i].setMap(null);
+                    }
+                }
             google.maps.event.addDomListener(window, 'load', initialize);
 
 
