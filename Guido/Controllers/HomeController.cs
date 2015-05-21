@@ -27,14 +27,14 @@ namespace Guido.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Više o Guido projektu.";
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Kontaktirajte članove tima.";
 
             return View();
         }
