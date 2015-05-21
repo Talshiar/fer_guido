@@ -131,17 +131,18 @@
 
                     // This event listener will call addMarker() when the map is clicked.
                     google.maps.event.addListener(map, 'click', function (event) {
-                        addMarker(event.latLng, "Odabrana lokacija");
+                        addMarker(event.latLng, "Odabrana lokacija",-1);
                     });
 
                     // Adds a marker at the center of the map.
-                    addMarker(mapCenter, "Glavni trg Josipa bana Jelačića");
+                    addMarker(mapCenter, "Glavni trg Josipa bana Jelačića",-2);
 
                     // Sets the map on all markers in the array.
 
                 }
                 //ajmo racunati rute
                 function calcRoute(ruta) {
+                    clearOverlays();
                     if (ruta == 0) {
                         ruta = zadnjaRuta;
                     } else {
@@ -201,15 +202,11 @@
                             //alert(IDplace);
 
                             var lokacija = new google.maps.LatLng(markers.lngM[i], markers.latM[i]);
-                            addMarker(lokacija, markers.descriptionM[i]);
+                            addMarker(lokacija, markers.descriptionM[i],i);
                             i++;
-                            
-                        
-                    
-
                 }
                 // Add a marker to the map and push to the array.
-                function addMarker(location, desc) {
+                function addMarker(location, desc, ID) {
 
                     clearOverlays()
                     //alert(location + desc);
@@ -217,11 +214,43 @@
                         position: location,
                         map: map
                     });
-                    
-                    var infowindow = new google.maps.InfoWindow({
-                        content: desc
-                    });
+                    var summaryPanel = document.getElementById('directions_panel');
+
+
                     MapMarker.push(marker);
+                    summaryPanel.innerHTML = '';
+                    //Show me the info
+                    switch(ID) {
+                        case (-1):
+                            var Desc = '<h3>Marker</h3>' +
+                                '<p>Koordinate: ' + location + '</p>' + '<p>' + desc + '</p>'
+                            summaryPanel.innerHTML = '';
+                            var infowindow = new google.maps.InfoWindow({
+                                content: Desc
+                            });
+                            break;
+                        case (-2):
+                            var Desc = '<h3>Trg bana Josipa Jelačića</h3>' +
+                                '<p>Adresa: Trg bana Josipa Jelačića </p>' + '<p>' + desc + '</p>'
+                            //summaryPanel.innerHTML = '';
+                            summaryPanel.innerHTML = '<strong>Detalji lokacije:</strong>';
+                            var infowindow = new google.maps.InfoWindow({
+                                content: Desc
+                            });
+                            break;
+                         default:
+                            //summaryPanel.innerHTML = '';
+                            summaryPanel.innerHTML += '<strong>Detalji lokacije:</strong>';
+                            summaryPanel.innerHTML += '<br><br>Adresa: ' + markers.nameM[ID] + '<br>Adresa: ' + markers.addressM[ID];
+                            summaryPanel.innerHTML += '<br><a href="#" onclick="desc">Opširnije</a><hr>';
+                            var Desc = '<h3>' + markers.nameM[ID] + '</h3>' +
+                                '<p>Adresa: ' + markers.addressM[ID] + '</p>' + '<p>' + desc + '</p>'
+                            var infowindow = new google.maps.InfoWindow({
+                                content: Desc
+                            });
+                            break;
+                    }
+
                     google.maps.event.addListener(marker, 'click', function () {
                         infowindow.open(map, marker);
                         if (marker.getAnimation() != null) {
@@ -264,12 +293,6 @@
                 </p>
             </div>          
                 <div id="directions_panel" style="margin:20px;"></div>
-
-            <script type="text/javascript">
-                function UpdateLabel() {
-                    document.getElementById("infoLabel").innerText = "kliknuo si gumb, bravo";
-                }
-            </script>
         </div>
 
     </div>
